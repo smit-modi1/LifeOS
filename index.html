@@ -1,805 +1,446 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>LifeOS — Command Centre</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --white:#FAFAF8;--off:#F2EFE9;--cream:#E8E2D9;
+  --w:#FAFAF8;--off:#F2EFE9;--cream:#E8E2D9;
   --cl:#C8A882;--c:#8B6343;--cd:#5C3D2E;
-  --ink:#3A2516;--black:#151210;--muted:#9C8B7A;
-  --border:#DDD5C8;--success:#4A7C59;--danger:#A84242;
-  --dot:rgba(139,99,67,0.14);
+  --ink:#3A2516;--black:#151210;--mu:#9C8B7A;
+  --br:#DDD5C8;--ok:#4A7C59;--er:#A84242;
 }
-html,body,#root{height:100%;font-family:'DM Sans',sans-serif;font-size:14px;-webkit-font-smoothing:antialiased;background:var(--white);color:var(--black)}
+html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:14px;-webkit-font-smoothing:antialiased;background:var(--w);color:var(--black)}
+#root{height:100%}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--cream);border-radius:99px}
-input,textarea,select{font-family:'DM Sans',sans-serif}
+input,textarea,select{font-family:'DM Sans',sans-serif;font-size:14px}
 input:focus,textarea:focus,select:focus{outline:none;border-color:var(--c)!important;box-shadow:0 0 0 3px rgba(139,99,67,.12)}
-input[type=range]{accent-color:var(--c);cursor:pointer}
-button{transition:all .15s ease;cursor:pointer;font-family:'DM Sans',sans-serif}
-button:hover{opacity:.85}
-.dot-bg{background-image:radial-gradient(circle,var(--dot) 1.3px,transparent 1.3px);background-size:22px 22px}
+input[type=range]{accent-color:var(--c);cursor:pointer;width:100%}
+button{transition:opacity .15s;cursor:pointer;font-family:'DM Sans',sans-serif}
+button:hover{opacity:.82}
 .serif{font-family:'DM Serif Display',serif}
-/* Layout */
-#app{display:flex;height:100vh;overflow:hidden}
-nav{width:220px;background:var(--off);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;background-image:radial-gradient(circle,rgba(139,99,67,.12) 1.2px,transparent 1.2px);background-size:20px 20px}
-nav .logo{padding:22px 22px 18px;border-bottom:1px solid var(--border);background:var(--white)}
-nav .logo .tag{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cl);margin-bottom:6px}
-nav .logo .name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--ink);line-height:1.25}
-nav .logo .date{color:var(--muted);font-size:11px;margin-top:6px}
-nav .nav-items{flex:1;overflow-y:auto;padding:10px 0}
-nav .nav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:10px 22px;background:transparent;border:none;border-left:3px solid transparent;color:var(--muted);text-align:left;font-size:13px;font-weight:500}
-nav .nav-btn.active{background:var(--white);border-left-color:var(--c);color:var(--cd);font-weight:700;box-shadow:0 1px 4px rgba(58,37,22,.08)}
-nav .nav-footer{padding:14px 22px;border-top:1px solid var(--border);background:var(--white);font-size:10.5px;color:var(--muted);line-height:1.6}
-main{flex:1;overflow-y:auto;padding:36px 40px;background:var(--white);background-image:radial-gradient(circle,rgba(139,99,67,.07) 1px,transparent 1px);background-size:28px 28px}
-.panel{max-width:840px;margin:0 auto;background:var(--white);border-radius:20px;padding:28px 32px;box-shadow:0 2px 24px rgba(58,37,22,.07)}
-/* Components */
-.sh-title{font-family:'DM Serif Display',serif;font-size:26px;font-weight:400;color:var(--ink);letter-spacing:-.4px;line-height:1.2}
-.sh-sub{margin-top:5px;color:var(--muted);font-size:13px}
-.shead{margin-bottom:28px}
-.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(58,37,22,.06)}
-.card.elevated{box-shadow:0 4px 16px rgba(58,37,22,.12)}
-.card.bg-off{background:var(--off)}
-.add-row{display:flex;gap:8px;margin-bottom:18px}
-.add-row input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:9px 14px;font-size:13.5px;background:var(--white);color:var(--black)}
-.add-row button{background:var(--c);border:none;border-radius:10px;padding:9px 16px;color:#fff;font-size:17px;font-weight:700;box-shadow:0 2px 8px rgba(139,99,67,.25)}
+.app{display:flex;height:100vh;overflow:hidden}
+nav{width:220px;flex-shrink:0;display:flex;flex-direction:column;background:var(--off);border-right:1px solid var(--br);background-image:radial-gradient(circle,rgba(139,99,67,.12) 1.2px,transparent 1.2px);background-size:20px 20px}
+.nav-logo{padding:22px 22px 18px;border-bottom:1px solid var(--br);background:var(--w)}
+.nav-tag{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cl);margin-bottom:6px}
+.nav-name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--ink);line-height:1.25}
+.nav-date{color:var(--mu);font-size:11px;margin-top:6px}
+.nav-list{flex:1;overflow-y:auto;padding:10px 0}
+.nb{display:flex;align-items:center;gap:10px;width:100%;padding:10px 22px;background:transparent;border:none;border-left:3px solid transparent;color:var(--mu);text-align:left;font-size:13px;font-weight:500}
+.nb.on{background:var(--w);border-left-color:var(--c);color:var(--cd);font-weight:700;box-shadow:0 1px 4px rgba(58,37,22,.08)}
+.nav-foot{padding:14px 22px;border-top:1px solid var(--br);background:var(--w);font-size:10.5px;color:var(--mu);line-height:1.6}
+main{flex:1;overflow-y:auto;padding:36px 40px;background:var(--w);background-image:radial-gradient(circle,rgba(139,99,67,.07) 1px,transparent 1px);background-size:28px 28px}
+.panel{max-width:840px;margin:0 auto;background:var(--w);border-radius:20px;padding:28px 32px;box-shadow:0 2px 24px rgba(58,37,22,.07)}
+.sh{margin-bottom:28px}
+.sh h2{font-family:'DM Serif Display',serif;font-size:26px;font-weight:400;color:var(--ink);letter-spacing:-.4px;line-height:1.2}
+.sh p{margin-top:5px;color:var(--mu);font-size:13px}
+.card{background:var(--w);border:1px solid var(--br);border-radius:14px;padding:20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(58,37,22,.06)}
+.card.el{box-shadow:0 4px 16px rgba(58,37,22,.12)}
+.card.bg{background:var(--off)}
+.ar{display:flex;gap:8px;margin-bottom:18px}
+.ar input{flex:1;border:1.5px solid var(--br);border-radius:10px;padding:9px 14px;background:var(--w);color:var(--black)}
+.ar button{background:var(--c);border:none;border-radius:10px;padding:9px 18px;color:#fff;font-size:17px;font-weight:700;box-shadow:0 2px 8px rgba(139,99,67,.25)}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
-.tab-btn{padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-size:12.5px;font-weight:600}
-.tab-btn.active{background:var(--c);border-color:var(--c);color:#fff}
-.x-btn{background:var(--off);border:none;border-radius:6px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--muted);flex-shrink:0}
-.progress-wrap{display:flex;align-items:center;gap:10px}
-.progress-track{flex:1;height:5px;background:var(--cream);border-radius:99px;overflow:hidden}
-.progress-bar{height:100%;border-radius:99px;transition:width .4s ease}
-.progress-pct{color:var(--muted);font-size:11.5px;min-width:32px;text-align:right}
-.field{border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;font-size:13.5px;background:var(--white);color:var(--black);width:100%}
-.tag-chip{display:inline-flex;align-items:center;gap:6px;border-radius:8px;padding:5px 12px;font-size:13px;color:var(--ink)}
-.stat-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 16px;cursor:pointer;box-shadow:0 1px 4px rgba(58,37,22,.06);transition:all .2s}
-.stat-card:hover{border-color:var(--c);box-shadow:0 4px 16px rgba(139,99,67,.16)}
-.empty{text-align:center;padding:40px;color:var(--muted);font-size:13.5px}
-/* Responsive */
+.tb{padding:6px 16px;border-radius:20px;border:1.5px solid var(--br);background:transparent;color:var(--mu);font-size:12.5px;font-weight:600}
+.tb.on{background:var(--c);border-color:var(--c);color:#fff}
+.fi{border:1.5px solid var(--br);border-radius:10px;padding:8px 12px;background:var(--w);color:var(--black);width:100%}
+textarea.fi{resize:vertical;line-height:1.65}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin-bottom:28px}
+.sc{background:var(--w);border:1px solid var(--br);border-radius:14px;padding:18px 16px;cursor:pointer;box-shadow:0 1px 4px rgba(58,37,22,.06);transition:all .2s}
+.sc:hover{border-color:var(--c);box-shadow:0 4px 16px rgba(139,99,67,.16)}
+.pr{display:flex;align-items:center;gap:10px}
+.pt{flex:1;height:5px;background:var(--cream);border-radius:99px;overflow:hidden}
+.pb{height:100%;border-radius:99px;transition:width .4s ease}
+.xb{background:var(--off);border:none;border-radius:6px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--mu);flex-shrink:0;padding:0}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:8px;padding:5px 12px;font-size:13px;color:var(--ink)}
+.empty{text-align:center;padding:40px;color:var(--mu);font-size:13.5px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.row{display:flex;align-items:center;gap:8px}
+.hb{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--c);border:none;border-radius:9px;width:38px;height:38px;align-items:center;justify-content:center;color:#fff;font-size:18px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
+.overlay.show{display:block}
 @media(max-width:700px){
   nav{position:fixed;left:-220px;top:0;height:100%;z-index:100;transition:left .25s}
   nav.open{left:0}
   main{padding:20px 16px}
-  .panel{padding:18px 16px;border-radius:14px}
-  .hamburger{display:flex}
+  .panel{padding:18px 14px;border-radius:14px}
+  .hb{display:flex}
+  .g3{grid-template-columns:1fr 1fr}
 }
-.hamburger{display:none;position:fixed;top:14px;left:14px;z-index:99;background:var(--c);border:none;border-radius:9px;width:38px;height:38px;align-items:center;justify-content:center;color:#fff;font-size:18px}
 </style>
 </head>
 <body>
-<div id="app"></div>
+<div id="root"></div>
+<script type="module">
+import { createElement as h, useState, Fragment } from 'https://esm.sh/react@18';
+import { createRoot } from 'https://esm.sh/react-dom@18/client';
+import htm from 'https://esm.sh/htm@3';
+const html = htm.bind(h);
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
-<script type="text/babel">
-const { useState, useEffect, useCallback } = React;
-
-// ─── CONSTANTS ──────────────────────────────────────────────────────────────
-const SECTIONS = [
-  {id:"dashboard",label:"Overview",icon:"◈"},
-  {id:"work",label:"Work",icon:"▣"},
-  {id:"habits",label:"Habits",icon:"◎"},
-  {id:"skills",label:"Skills",icon:"◆"},
-  {id:"wealth",label:"Wealth",icon:"◉"},
-  {id:"learning",label:"Learning",icon:"◐"},
-  {id:"reading",label:"Reading",icon:"◧"},
-  {id:"notes",label:"Notes",icon:"◫"},
-  {id:"family",label:"Responsibilities",icon:"◑"},
-  {id:"wishes",label:"Wish List",icon:"✦"},
-];
-const READING_CATS = ["Business","Startup","Finance","Geo-politics","Self-development","History"];
-const DEFAULT = {
-  work:{projects:[]},
-  habits:{monthly:[],quarterly:[],yearly:[]},
-  skills:{goodAt:[],workingOn:[],wantToLearn:[]},
-  wealth:{investments:[],expenses:[]},
-  learning:{current:[],wishlist:[]},
-  reading:{current:[],wishlist:{}},
-  notes:{items:[]},
-  family:{members:[]},
-  wishes:{items:[]},
-};
 const uid = () => Math.random().toString(36).slice(2,9);
-const today = () => new Date().toISOString().split("T")[0];
-const save = d => { try { localStorage.setItem("lifeos-v4", JSON.stringify(d)); } catch(_){} };
-const loadData = () => {
-  try {
-    const r = localStorage.getItem("lifeos-v4");
-    if (r) return {...DEFAULT,...JSON.parse(r)};
-  } catch(_) {}
-  return DEFAULT;
+const today = () => new Date().toISOString().split('T')[0];
+const RC = ['Business','Startup','Finance','Geo-politics','Self-development','History'];
+const SECS = [
+  {id:'dashboard',label:'Overview',icon:'◈'},
+  {id:'work',label:'Work',icon:'▣'},
+  {id:'habits',label:'Habits',icon:'◎'},
+  {id:'skills',label:'Skills',icon:'◆'},
+  {id:'wealth',label:'Wealth',icon:'◉'},
+  {id:'learning',label:'Learning',icon:'◐'},
+  {id:'reading',label:'Reading',icon:'◧'},
+  {id:'notes',label:'Notes',icon:'◫'},
+  {id:'family',label:'Responsibilities',icon:'◑'},
+  {id:'wishes',label:'Wish List',icon:'✦'},
+];
+const DEF = {
+  work:{projects:[]},habits:{monthly:[],quarterly:[],yearly:[]},
+  skills:{goodAt:[],workingOn:[],wantToLearn:[]},wealth:{investments:[],expenses:[]},
+  learning:{current:[],wishlist:[]},reading:{current:[],wishlist:{}},
+  notes:{items:[]},family:{members:[]},wishes:{items:[]},
 };
+const ls = () => { try{const r=localStorage.getItem('lifeos-v6');if(r)return{...DEF,...JSON.parse(r)};}catch(_){}return DEF; };
+const sv = d => { try{localStorage.setItem('lifeos-v6',JSON.stringify(d));}catch(_){} };
 
-// ─── SHARED COMPONENTS ──────────────────────────────────────────────────────
-function SHeader({title,sub}) {
-  return (
-    <div className="shead">
-      <h2 className="sh-title serif">{title}</h2>
-      {sub && <p className="sh-sub">{sub}</p>}
-    </div>
-  );
-}
+// shared
+const SH = ({title,sub}) => html`<div class="sh"><h2 class="serif">${title}</h2>${sub&&html`<p>${sub}</p>`}</div>`;
+const Card = ({children,el,bg,style={}}) => html`<div class=${'card'+(el?' el':'')+(bg?' bg':'')} style=${style}>${children}</div>`;
+const XBtn = ({onClick}) => html`<button class="xb" onClick=${onClick}>×</button>`;
+const PBar = ({value,color}) => { const p=Math.min(100,Math.round(value||0)); return html`<div class="pr"><div class="pt"><div class="pb" style=${{width:p+'%',background:color||'var(--c)'}}></div></div><span style=${{color:'var(--mu)',fontSize:11.5,minWidth:32,textAlign:'right'}}>${p}%</span></div>`; };
 
-function Card({children, style={}, elevated=false, bgOff=false}) {
-  let cls = "card";
-  if (elevated) cls += " elevated";
-  if (bgOff) cls += " bg-off";
-  return <div className={cls} style={style}>{children}</div>;
+function AddRow({placeholder,onAdd}) {
+  const [v,setV]=useState('');
+  const go=()=>{const t=v.trim();if(t){onAdd(t);setV('');}};
+  return html`<div class="ar"><input value=${v} onInput=${e=>setV(e.target.value)} onKeyDown=${e=>e.key==='Enter'&&go()} placeholder=${placeholder}/><button onClick=${go}>+</button></div>`;
 }
+function Tabs({tabs,active,onSelect}) {
+  return html`<div class="tabs">${tabs.map(t=>html`<button key=${t.id} class=${'tb'+(active===t.id?' on':'')} onClick=${()=>onSelect(t.id)}>${t.label}</button>`)}</div>`;
+}
+const FI = ({value,onChange,placeholder,type='text',style={}}) => html`<input class="fi" type=${type} value=${value} onInput=${e=>onChange(e.target.value)} placeholder=${placeholder} style=${style}/>`;
+const TA = ({value,onChange,placeholder,rows=3,style={}}) => html`<textarea class="fi" rows=${rows} onInput=${e=>onChange(e.target.value)} placeholder=${placeholder} style=${style}>${value}</textarea>`;
+const SE = ({value,onChange,children,style={}}) => html`<select class="fi" value=${value} onChange=${e=>onChange(e.target.value)} style=${{width:'auto',...style}}>${children}</select>`;
+const Chip = ({label,color,onRemove}) => { const c=color||'var(--cl)'; return html`<span class="chip" style=${{background:c+'18',border:`1px solid ${c}44`}}>${label}${onRemove&&html`<button onClick=${onRemove} style=${{background:'none',border:'none',color:'var(--mu)',fontSize:14,cursor:'pointer',lineHeight:1,padding:0}}>×</button>`}</span>`; };
 
-function AddRow({placeholder, onAdd}) {
-  const [v, setV] = useState("");
-  const go = () => { if (v.trim()) { onAdd(v.trim()); setV(""); } };
-  return (
-    <div className="add-row">
-      <input value={v} onChange={e=>setV(e.target.value)} onKeyDown={e=>e.key==="Enter"&&go()} placeholder={placeholder} />
-      <button onClick={go}>+</button>
-    </div>
-  );
-}
-
-function Tabs({tabs, active, onSelect}) {
-  return (
-    <div className="tabs">
-      {tabs.map(t => (
-        <button key={t.id} className={`tab-btn${active===t.id?" active":""}`} onClick={()=>onSelect(t.id)}>{t.label}</button>
-      ))}
-    </div>
-  );
-}
-
-function ProgressBar({value, color}) {
-  const pct = Math.min(100, Math.round(value));
-  const c = color || "var(--c)";
-  return (
-    <div className="progress-wrap">
-      <div className="progress-track">
-        <div className="progress-bar" style={{width:pct+"%", background:c}} />
-      </div>
-      <span className="progress-pct">{pct}%</span>
-    </div>
-  );
-}
-
-function XBtn({onClick}) {
-  return <button className="x-btn" onClick={onClick}>×</button>;
-}
-
-function Tag({label, color, onRemove}) {
-  const c = color || "var(--cl)";
-  return (
-    <span className="tag-chip" style={{background:c+"18",border:`1px solid ${c}44`}}>
-      {label}
-      {onRemove && <button onClick={onRemove} style={{background:"none",border:"none",color:"var(--muted)",fontSize:14,cursor:"pointer",lineHeight:1,padding:0}}>×</button>}
-    </span>
-  );
-}
-
-function Field(props) {
-  return <input className="field" {...props} />;
-}
-function TextArea(props) {
-  return <textarea className="field" {...props} />;
-}
-function Select({value, onChange, children, style={}}) {
-  return <select className="field" value={value} onChange={onChange} style={{width:"auto",...style}}>{children}</select>;
-}
-
-// ─── DASHBOARD ──────────────────────────────────────────────────────────────
-function Dashboard({data, goto}) {
-  const projects = data.work?.projects || [];
-  const allH = [...(data.habits?.monthly||[]),...(data.habits?.quarterly||[]),...(data.habits?.yearly||[])];
-  const todayTicks = allH.filter(h=>h.ticks?.[today()]).length;
-  const courses = data.learning?.current || [];
-  const books = data.reading?.current || [];
-  const wishes = data.wishes?.items || [];
-  const doneW = wishes.filter(w=>w.done).length;
-  const skillsTotal = (data.skills?.goodAt?.length||0)+(data.skills?.workingOn?.length||0)+(data.skills?.wantToLearn?.length||0);
-  const investments = data.wealth?.investments || [];
-  const totalInv = investments.reduce((s,i)=>s+(parseFloat(i.value)||0),0);
-  const dateStr = new Date().toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-
-  const stats = [
-    {icon:"▣",label:"Active Projects",value:projects.filter(p=>p.status==="Active").length,sub:`${projects.length} total`,section:"work"},
-    {icon:"◎",label:"Habits Today",value:`${todayTicks}/${allH.length}`,sub:"completed",section:"habits"},
-    {icon:"◆",label:"Skills Mapped",value:skillsTotal,sub:"tracked",section:"skills"},
-    {icon:"◉",label:"Portfolio",value:`£${totalInv.toLocaleString()}`,sub:"invested",section:"wealth"},
-    {icon:"◐",label:"Courses Active",value:courses.length,sub:"in progress",section:"learning"},
-    {icon:"◧",label:"Books",value:books.length,sub:"reading now",section:"reading"},
-    {icon:"✦",label:"Wishes",value:`${doneW}/${wishes.length}`,sub:"fulfilled",section:"wishes"},
+// Dashboard
+function Dashboard({data,goto}) {
+  const proj=data.work?.projects||[];
+  const allH=[...(data.habits?.monthly||[]),...(data.habits?.quarterly||[]),...(data.habits?.yearly||[])];
+  const tT=allH.filter(h=>h.ticks?.[today()]).length;
+  const cur=data.learning?.current||[];const bks=data.reading?.current||[];
+  const wsh=data.wishes?.items||[];const dW=wsh.filter(w=>w.done).length;
+  const sk=(data.skills?.goodAt?.length||0)+(data.skills?.workingOn?.length||0)+(data.skills?.wantToLearn?.length||0);
+  const inv=data.wealth?.investments||[];const tI=inv.reduce((s,i)=>s+(parseFloat(i.value)||0),0);
+  const ds=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const stats=[
+    {icon:'▣',label:'Active Projects',value:proj.filter(p=>p.status==='Active').length,sub:`${proj.length} total`,s:'work'},
+    {icon:'◎',label:'Habits Today',value:`${tT}/${allH.length}`,sub:'completed',s:'habits'},
+    {icon:'◆',label:'Skills Mapped',value:sk,sub:'tracked',s:'skills'},
+    {icon:'◉',label:'Portfolio',value:`£${tI.toLocaleString()}`,sub:'invested',s:'wealth'},
+    {icon:'◐',label:'Courses Active',value:cur.length,sub:'in progress',s:'learning'},
+    {icon:'◧',label:'Books',value:bks.length,sub:'reading now',s:'reading'},
+    {icon:'✦',label:'Wishes',value:`${dW}/${wsh.length}`,sub:'fulfilled',s:'wishes'},
   ];
+  return html`<div>
+    <div style=${{marginBottom:36}}>
+      <div style=${{fontSize:11,fontWeight:700,letterSpacing:3,textTransform:'uppercase',color:'var(--cl)',marginBottom:8}}>◈ LifeOS</div>
+      <h1 class="serif" style=${{fontSize:34,fontWeight:400,color:'var(--ink)',letterSpacing:'-.5px',lineHeight:1.15,marginBottom:8}}>Your Command Centre</h1>
+      <p style=${{color:'var(--mu)',fontSize:13.5}}>${ds}</p>
+    </div>
+    <div class="sg">${stats.map(s=>html`<div key=${s.s} class="sc" onClick=${()=>goto(s.s)}><div style=${{fontSize:20,color:'var(--cl)',marginBottom:10}}>${s.icon}</div><div style=${{fontSize:24,fontWeight:800,color:'var(--ink)',letterSpacing:'-.5px'}}>${s.value}</div><div style=${{fontSize:12.5,fontWeight:600,color:'var(--ink)',marginTop:3}}>${s.label}</div><div style=${{fontSize:11.5,color:'var(--mu)',marginTop:2}}>${s.sub}</div></div>`)}</div>
+    ${(cur.length>0||bks.length>0)&&html`<div style=${{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:12}}>
+      ${cur.length>0&&html`<${Card} bg><div style=${{fontSize:11,fontWeight:700,letterSpacing:2,textTransform:'uppercase',color:'var(--mu)',marginBottom:14}}>Learning Progress</div>${cur.slice(0,3).map(c=>html`<div key=${c.id} style=${{marginBottom:12}}><div style=${{display:'flex',justifyContent:'space-between',marginBottom:5}}><span style=${{fontSize:13,fontWeight:600}}>${c.name}</span><span style=${{fontSize:12,color:'var(--c)'}}>${c.progress}%</span></div><${PBar} value=${c.progress}/></div>`)}<//>` }
+      ${bks.length>0&&html`<${Card} bg><div style=${{fontSize:11,fontWeight:700,letterSpacing:2,textTransform:'uppercase',color:'var(--mu)',marginBottom:14}}>Reading Progress</div>${bks.slice(0,3).map(b=>html`<div key=${b.id} style=${{marginBottom:12}}><div style=${{display:'flex',justifyContent:'space-between',marginBottom:5}}><span style=${{fontSize:13,fontWeight:600}}>${b.name}</span><span style=${{fontSize:12,color:'var(--cd)'}}>${b.progress}%</span></div><${PBar} value=${b.progress} color="var(--cd)"/></div>`)}<//>` }
+    </div>`}
+    <${Card} style=${{background:'var(--off)',borderColor:'rgba(200,168,130,.4)'}}><div style=${{fontSize:11,fontWeight:700,letterSpacing:2,textTransform:'uppercase',color:'var(--cl)',marginBottom:10}}>◈ Today's Intention</div><p class="serif" style=${{fontSize:15,color:'var(--ink)',lineHeight:1.75,fontStyle:'italic'}}>"Show up with intention. Track your habits, advance one project, read one chapter, and call someone you love. Small edges, compounded daily, become extraordinary outcomes."</p><//>
+  </div>`;
+}
 
-  return (
-    <div>
-      <div style={{marginBottom:36}}>
-        <div style={{fontSize:11,fontWeight:700,letterSpacing:3,textTransform:"uppercase",color:"var(--cl)",marginBottom:8}}>◈ LifeOS</div>
-        <h1 className="serif" style={{fontSize:34,fontWeight:400,color:"var(--ink)",letterSpacing:"-.5px",lineHeight:1.15,marginBottom:8}}>Your Command Centre</h1>
-        <p style={{color:"var(--muted)",fontSize:13.5}}>{dateStr}</p>
+// Work
+function Work({data,update}) {
+  const {projects=[]}=data; const [tab,setTab]=useState('Active');
+  const ST=['Active','Paused','Done']; const SC={Active:'var(--c)',Paused:'var(--cl)',Done:'var(--ok)'};
+  const shown=tab==='All'?projects:projects.filter(p=>p.status===tab);
+  const add=name=>update({...data,projects:[...projects,{id:uid(),name,status:'Active',description:'',priority:'Medium',added:today()}]});
+  const cycle=id=>update({...data,projects:projects.map(p=>p.id===id?{...p,status:ST[(ST.indexOf(p.status)+1)%3]}:p)});
+  const setD=(id,v)=>update({...data,projects:projects.map(p=>p.id===id?{...p,description:v}:p)});
+  const setP=(id,v)=>update({...data,projects:projects.map(p=>p.id===id?{...p,priority:v}:p)});
+  const rm=id=>update({...data,projects:projects.filter(p=>p.id!==id)});
+  return html`<div>
+    <${SH} title="Work" sub="Projects you're driving — stay focused, stay accountable"/>
+    <${AddRow} placeholder="New project name..." onAdd=${add}/>
+    <${Tabs} tabs=${['Active','Paused','Done','All'].map(s=>({id:s,label:`${s} (${s==='All'?projects.length:projects.filter(p=>p.status===s).length})`}))} active=${tab} onSelect=${setTab}/>
+    ${shown.length===0&&html`<div class="empty">No ${tab.toLowerCase()} projects. ${tab==='Active'?'Add one above.':''}</div>`}
+    ${shown.map(p=>html`<${Card} key=${p.id}>
+      <div class="row" style=${{marginBottom:12}}>
+        <div style=${{flex:1}}><div style=${{fontWeight:700,color:'var(--ink)',fontSize:15}}>${p.name}</div><div style=${{color:'var(--mu)',fontSize:11.5,marginTop:2}}>Added ${p.added}</div></div>
+        <${SE} value=${p.priority} onChange=${v=>setP(p.id,v)} style=${{padding:'4px 8px',fontSize:12}}><option>High</option><option>Medium</option><option>Low</option><//>
+        <button onClick=${()=>cycle(p.id)} style=${{border:`1.5px solid ${SC[p.status]}`,borderRadius:8,padding:'4px 12px',background:SC[p.status]+'18',color:SC[p.status],fontSize:12,fontWeight:700}}>${p.status}</button>
+        <${XBtn} onClick=${()=>rm(p.id)}/>
       </div>
+      <${TA} value=${p.description} onChange=${v=>setD(p.id,v)} placeholder="Notes, context, next steps..." rows=${3}/>
+    <//>` )}
+  </div>`;
+}
 
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(155px,1fr))",gap:10,marginBottom:28}}>
-        {stats.map(s=>(
-          <div key={s.section} className="stat-card" onClick={()=>goto(s.section)}>
-            <div style={{fontSize:20,color:"var(--cl)",marginBottom:10}}>{s.icon}</div>
-            <div style={{fontSize:24,fontWeight:800,color:"var(--ink)",letterSpacing:"-.5px"}}>{s.value}</div>
-            <div style={{fontSize:12.5,fontWeight:600,color:"var(--ink)",marginTop:3}}>{s.label}</div>
-            <div style={{fontSize:11.5,color:"var(--muted)",marginTop:2}}>{s.sub}</div>
-          </div>
-        ))}
+// Habits
+function Habits({data,update}) {
+  const {monthly=[],quarterly=[],yearly=[]}=data; const [tab,setTab]=useState('monthly');
+  const lists={monthly,quarterly,yearly}; const cur=lists[tab];
+  const tc=cur.filter(h=>h.ticks?.[today()]).length;
+  const add=name=>update({...data,[tab]:[...cur,{id:uid(),name,ticks:{}}]});
+  const rm=id=>update({...data,[tab]:cur.filter(h=>h.id!==id)});
+  const tick=id=>{ const nl=cur.map(h=>{ if(h.id!==id)return h; const t={...(h.ticks||{})}; t[today()]=!t[today()]; return{...h,ticks:t}; }); update({...data,[tab]:nl}); };
+  return html`<div>
+    <${SH} title="Habit Stack" sub="Systems beat willpower. Build the stack, let it run."/>
+    <${Tabs} tabs=${[{id:'monthly',label:`Monthly (${monthly.length})`},{id:'quarterly',label:`Quarterly (${quarterly.length})`},{id:'yearly',label:`Yearly (${yearly.length})`}]} active=${tab} onSelect=${setTab}/>
+    ${cur.length>0&&html`<div style=${{background:'var(--off)',borderRadius:10,padding:'10px 16px',marginBottom:16,display:'flex',alignItems:'center',justifyContent:'space-between'}}><span style=${{color:'var(--mu)',fontSize:13}}>Today's completion</span><span style=${{fontWeight:700,color:'var(--c)',fontSize:15}}>${tc}/${cur.length}</span></div>`}
+    <${AddRow} placeholder=${`Add ${tab} habit...`} onAdd=${add}/>
+    ${cur.length===0&&html`<div class="empty">No ${tab} habits yet. Add one above.</div>`}
+    ${cur.map(h=>{ const tk=!!(h.ticks?.[today()]); const cnt=Object.values(h.ticks||{}).filter(Boolean).length; return html`<${Card} key=${h.id} style=${{borderColor:tk?'var(--cl)':'var(--br)'}}>
+      <div class="row">
+        <button onClick=${()=>tick(h.id)} style=${{width:28,height:28,borderRadius:8,flexShrink:0,border:`2px solid ${tk?'var(--c)':'var(--br)'}`,background:tk?'var(--c)':'var(--w)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:13,color:'#fff',boxShadow:tk?'0 2px 8px rgba(139,99,67,.3)':'none',padding:0}}>${tk?'✓':''}</button>
+        <div style=${{flex:1}}><div style=${{color:'var(--ink)',fontWeight:600,fontSize:14,textDecoration:tk?'line-through':'none',opacity:tk?.6:1}}>${h.name}</div><div style=${{color:'var(--mu)',fontSize:11.5,marginTop:2}}>${cnt} completions total</div></div>
+        ${cnt>0&&html`<div style=${{background:'rgba(200,168,130,.2)',border:'1px solid rgba(200,168,130,.4)',borderRadius:8,padding:'3px 10px',fontSize:12,fontWeight:700,color:'var(--c)'}}>✦ ${cnt}</div>`}
+        <${XBtn} onClick=${()=>rm(h.id)}/>
       </div>
+    <//>` })}
+  </div>`;
+}
 
-      {(courses.length>0||books.length>0) && (
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:12}}>
-          {courses.length>0 && (
-            <Card bgOff>
-              <div style={{fontSize:11,fontWeight:700,letterSpacing:2,textTransform:"uppercase",color:"var(--muted)",marginBottom:14}}>Learning Progress</div>
-              {courses.slice(0,3).map(c=>(
-                <div key={c.id} style={{marginBottom:12}}>
-                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-                    <span style={{fontSize:13,fontWeight:600,color:"var(--ink)"}}>{c.name}</span>
-                    <span style={{fontSize:12,color:"var(--c)"}}>{c.progress}%</span>
-                  </div>
-                  <ProgressBar value={c.progress} />
-                </div>
-              ))}
-            </Card>
-          )}
-          {books.length>0 && (
-            <Card bgOff>
-              <div style={{fontSize:11,fontWeight:700,letterSpacing:2,textTransform:"uppercase",color:"var(--muted)",marginBottom:14}}>Reading Progress</div>
-              {books.slice(0,3).map(b=>(
-                <div key={b.id} style={{marginBottom:12}}>
-                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-                    <span style={{fontSize:13,fontWeight:600,color:"var(--ink)"}}>{b.name}</span>
-                    <span style={{fontSize:12,color:"var(--cd)"}}>{b.progress}%</span>
-                  </div>
-                  <ProgressBar value={b.progress} color="var(--cd)" />
-                </div>
-              ))}
-            </Card>
-          )}
+// Skills
+function Skills({data,update}) {
+  const {goodAt=[],workingOn=[],wantToLearn=[]}=data; const [tab,setTab]=useState('goodAt');
+  const cols={goodAt:{label:'Good At',color:'var(--ok)',list:goodAt},workingOn:{label:'Working On',color:'var(--c)',list:workingOn},wantToLearn:{label:'Future Learn',color:'var(--cl)',list:wantToLearn}};
+  const col=cols[tab];
+  const add=name=>update({...data,[tab]:[...col.list,{id:uid(),name}]});
+  const rm=id=>update({...data,[tab]:col.list.filter(s=>s.id!==id)});
+  return html`<div>
+    <${SH} title="Skills" sub="Map your edge, your growth edge, and your horizon"/>
+    <${Tabs} tabs=${Object.entries(cols).map(([id,c])=>({id,label:`${c.label} (${c.list.length})`}))} active=${tab} onSelect=${setTab}/>
+    <${AddRow} placeholder=${`Add to "${col.label}"...`} onAdd=${add}/>
+    <div style=${{display:'flex',flexWrap:'wrap',gap:8}}>
+      ${col.list.map(s=>html`<${Chip} key=${s.id} label=${s.name} color=${col.color} onRemove=${()=>rm(s.id)}/>`)}
+      ${col.list.length===0&&html`<p style=${{color:'var(--mu)',fontSize:13.5,padding:'16px 0'}}>Nothing added yet.</p>`}
+    </div>
+  </div>`;
+}
+
+// Wealth
+function Wealth({data,update}) {
+  const {investments=[],expenses=[]}=data; const [tab,setTab]=useState('investments');
+  const tI=investments.reduce((s,i)=>s+(parseFloat(i.value)||0),0);
+  const tE=expenses.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const aI=n=>update({...data,investments:[...investments,{id:uid(),name:n,type:'',value:'',notes:''}]});
+  const uI=(id,f,v)=>update({...data,investments:investments.map(i=>i.id===id?{...i,[f]:v}:i)});
+  const rI=id=>update({...data,investments:investments.filter(i=>i.id!==id)});
+  const aE=n=>update({...data,expenses:[...expenses,{id:uid(),name:n,amount:'',category:'',date:today()}]});
+  const uE=(id,f,v)=>update({...data,expenses:expenses.map(e=>e.id===id?{...e,[f]:v}:e)});
+  const rE=id=>update({...data,expenses:expenses.filter(e=>e.id!==id)});
+  return html`<div>
+    <${SH} title="Wealth" sub="Assets tracked. Capital directed. Net worth grows."/>
+    <div class="g2" style=${{marginBottom:20}}>
+      <${Card} bg style=${{textAlign:'center'}}><div style=${{color:'var(--mu)',fontSize:11,textTransform:'uppercase',letterSpacing:1.5,marginBottom:6}}>Total Invested</div><div style=${{color:'var(--ink)',fontSize:28,fontWeight:800,letterSpacing:'-1px'}}>£${tI.toLocaleString()}</div><//>
+      <${Card} bg style=${{textAlign:'center'}}><div style=${{color:'var(--mu)',fontSize:11,textTransform:'uppercase',letterSpacing:1.5,marginBottom:6}}>Total Expenses</div><div style=${{color:'var(--cd)',fontSize:28,fontWeight:800,letterSpacing:'-1px'}}>£${tE.toLocaleString()}</div><//>
+    </div>
+    <${Tabs} tabs=${[{id:'investments',label:'Investments'},{id:'expenses',label:'Expenses'}]} active=${tab} onSelect=${setTab}/>
+    ${tab==='investments'&&html`
+      <${AddRow} placeholder="Asset (e.g. VWRL, Bitcoin, BTL Property)..." onAdd=${aI}/>
+      ${investments.length===0&&html`<div class="empty">No investments tracked. Add your first asset.</div>`}
+      ${investments.map(inv=>html`<${Card} key=${inv.id}>
+        <div class="row" style=${{marginBottom:12}}><div style=${{flex:1,fontWeight:700,color:'var(--ink)',fontSize:14.5}}>${inv.name}</div><${XBtn} onClick=${()=>rI(inv.id)}/></div>
+        <div class="g2" style=${{marginBottom:8}}><${FI} value=${inv.type} onChange=${v=>uI(inv.id,'type',v)} placeholder="Type (Stocks, Crypto...)"/><${FI} value=${inv.value} onChange=${v=>uI(inv.id,'value',v)} placeholder="Value (£)" type="number"/></div>
+        <${FI} value=${inv.notes} onChange=${v=>uI(inv.id,'notes',v)} placeholder="Notes..."/>
+      <//>` )}
+    `}
+    ${tab==='expenses'&&html`
+      <${AddRow} placeholder="Expense description..." onAdd=${aE}/>
+      ${expenses.length===0&&html`<div class="empty">No expenses logged yet.</div>`}
+      ${expenses.map(exp=>html`<${Card} key=${exp.id}>
+        <div class="row" style=${{marginBottom:12}}><div style=${{flex:1,fontWeight:700,color:'var(--ink)',fontSize:14.5}}>${exp.name}</div><${XBtn} onClick=${()=>rE(exp.id)}/></div>
+        <div class="g3"><${FI} value=${exp.amount} onChange=${v=>uE(exp.id,'amount',v)} placeholder="Amount (£)" type="number"/><${FI} value=${exp.category} onChange=${v=>uE(exp.id,'category',v)} placeholder="Category"/><${FI} value=${exp.date} onChange=${v=>uE(exp.id,'date',v)} type="date"/></div>
+      <//>` )}
+    `}
+  </div>`;
+}
+
+// Learning
+function Learning({data,update}) {
+  const {current=[],wishlist=[]}=data; const [tab,setTab]=useState('current');
+  const aC=n=>update({...data,current:[...current,{id:uid(),name:n,platform:'',progress:0,notes:''}]});
+  const uC=(id,f,v)=>update({...data,current:current.map(c=>c.id===id?{...c,[f]:v}:c)});
+  const rC=id=>update({...data,current:current.filter(c=>c.id!==id)});
+  const aW=n=>update({...data,wishlist:[...wishlist,{id:uid(),name:n,priority:'Medium'}]});
+  const uW=(id,f,v)=>update({...data,wishlist:wishlist.map(w=>w.id===id?{...w,[f]:v}:w)});
+  const rW=id=>update({...data,wishlist:wishlist.filter(w=>w.id!==id)});
+  return html`<div>
+    <${SH} title="Learning" sub="Your mind is the highest returning asset. Keep compounding."/>
+    <${Tabs} tabs=${[{id:'current',label:`In Progress (${current.length})`},{id:'wishlist',label:`Wishlist (${wishlist.length})`}]} active=${tab} onSelect=${setTab}/>
+    <${AddRow} placeholder=${tab==='current'?'Course name...':'Course you want to take...'} onAdd=${tab==='current'?aC:aW}/>
+    ${tab==='current'&&html`
+      ${current.length===0&&html`<div class="empty">No active courses. Start one.</div>`}
+      ${current.map(c=>html`<${Card} key=${c.id}>
+        <div class="row" style=${{marginBottom:12}}><div style=${{flex:1,fontWeight:700,color:'var(--ink)',fontSize:15}}>${c.name}</div><${XBtn} onClick=${()=>rC(c.id)}/></div>
+        <${FI} value=${c.platform} onChange=${v=>uC(c.id,'platform',v)} placeholder="Platform (Coursera, YouTube, Udemy...)" style=${{marginBottom:12}}/>
+        <div class="row" style=${{marginBottom:10}}><span style=${{color:'var(--mu)',fontSize:12.5,minWidth:56}}>Progress</span><input type="range" min="0" max="100" value=${c.progress} onInput=${e=>uC(c.id,'progress',+e.target.value)} style=${{flex:1}}/><span style=${{color:'var(--c)',fontWeight:700,fontSize:13.5,minWidth:36}}>${c.progress}%</span></div>
+        <${PBar} value=${c.progress}/>
+        <${TA} value=${c.notes} onChange=${v=>uC(c.id,'notes',v)} placeholder="Notes, key learnings..." rows=${2} style=${{marginTop:12}}/>
+      <//>` )}
+    `}
+    ${tab==='wishlist'&&html`
+      ${wishlist.length===0&&html`<div class="empty">Nothing in your learning wishlist yet.</div>`}
+      ${wishlist.map(w=>html`<${Card} key=${w.id}><div class="row"><div style=${{flex:1,fontWeight:600,color:'var(--ink)',fontSize:14}}>${w.name}</div><${SE} value=${w.priority} onChange=${v=>uW(w.id,'priority',v)} style=${{padding:'5px 8px',fontSize:12}}><option>High</option><option>Medium</option><option>Low</option><//>  <${XBtn} onClick=${()=>rW(w.id)}/></div><//>` )}
+    `}
+  </div>`;
+}
+
+// Reading
+function Reading({data,update}) {
+  const {current=[],wishlist={}}=data; const [tab,setTab]=useState('current'); const [cat,setCat]=useState('Business');
+  const tw=RC.reduce((s,c)=>s+(wishlist[c]?.length||0),0);
+  const aB=n=>update({...data,current:[...current,{id:uid(),name:n,author:'',progress:0}]});
+  const uB=(id,f,v)=>update({...data,current:current.map(b=>b.id===id?{...b,[f]:v}:b)});
+  const rB=id=>update({...data,current:current.filter(b=>b.id!==id)});
+  const aW=n=>{const l=wishlist[cat]||[];update({...data,wishlist:{...wishlist,[cat]:[...l,{id:uid(),name:n}]}});};
+  const rW=id=>update({...data,wishlist:{...wishlist,[cat]:(wishlist[cat]||[]).filter(b=>b.id!==id)}});
+  return html`<div>
+    <${SH} title="Reading" sub=${`Leaders are readers. ${current.length} in progress · ${tw} queued`}/>
+    <${Tabs} tabs=${[{id:'current',label:`Reading Now (${current.length})`},{id:'wishlist',label:`To Read (${tw})`}]} active=${tab} onSelect=${setTab}/>
+    <${AddRow} placeholder=${tab==='current'?'Book title...':`Add to ${cat}...`} onAdd=${tab==='current'?aB:aW}/>
+    ${tab==='current'&&html`
+      ${current.length===0&&html`<div class="empty">Nothing in progress. What are you reading?</div>`}
+      ${current.map(b=>html`<${Card} key=${b.id}>
+        <div class="row" style=${{marginBottom:12}}><div style=${{flex:1,fontWeight:700,color:'var(--ink)',fontSize:15}}>${b.name}</div><${XBtn} onClick=${()=>rB(b.id)}/></div>
+        <${FI} value=${b.author} onChange=${v=>uB(b.id,'author',v)} placeholder="Author" style=${{marginBottom:12}}/>
+        <div class="row" style=${{marginBottom:10}}><span style=${{color:'var(--mu)',fontSize:12.5,minWidth:56}}>Progress</span><input type="range" min="0" max="100" value=${b.progress} onInput=${e=>uB(b.id,'progress',+e.target.value)} style=${{flex:1}}/><span style=${{color:'var(--cd)',fontWeight:700,fontSize:13.5,minWidth:36}}>${b.progress}%</span></div>
+        <${PBar} value=${b.progress} color="var(--cd)"/>
+      <//>` )}
+    `}
+    ${tab==='wishlist'&&html`
+      <div style=${{display:'flex',flexWrap:'wrap',gap:6,marginBottom:16}}>${RC.map(c=>html`<button key=${c} class=${'tb'+(cat===c?' on':'')} onClick=${()=>setCat(c)} style=${cat===c?{background:'var(--cd)',borderColor:'var(--cd)'}:{}}>${c} (${(wishlist[c]||[]).length})</button>`)}</div>
+      ${(wishlist[cat]||[]).length===0&&html`<p style=${{color:'var(--mu)',fontSize:13,padding:'20px 0'}}>No ${cat} books queued.</p>`}
+      ${(wishlist[cat]||[]).map(b=>html`<div key=${b.id} style=${{display:'flex',alignItems:'center',padding:'11px 0',borderBottom:'1px solid var(--br)',gap:10}}><div style=${{width:6,height:6,borderRadius:99,background:'var(--cl)',flexShrink:0}}></div><div style=${{flex:1,color:'var(--ink)',fontSize:13.5}}>${b.name}</div><${XBtn} onClick=${()=>rW(b.id)}/></div>` )}
+    `}
+  </div>`;
+}
+
+// Notes
+function Notes({data,update}) {
+  const {items=[]}=data; const [aid,setAid]=useState(null); const [filter,setFilter]=useState('All');
+  const labels=['All',...Array.from(new Set(items.map(n=>n.label).filter(Boolean)))];
+  const filtered=filter==='All'?items:items.filter(n=>n.label===filter);
+  const active=items.find(n=>n.id===aid);
+  const add=()=>{const n={id:uid(),title:'Untitled Note',content:'',label:'',created:today()};update({...data,items:[n,...items]});setAid(n.id);};
+  const up=(id,f,v)=>update({...data,items:items.map(n=>n.id===id?{...n,[f]:v}:n)});
+  const rm=id=>{update({...data,items:items.filter(n=>n.id!==id)});if(aid===id)setAid(null);};
+  return html`<div>
+    <${SH} title="Notes" sub="Capture it now. Refine it later. Build your second brain."/>
+    <div style=${{display:'grid',gridTemplateColumns:'200px 1fr',gap:16,minHeight:400}}>
+      <div style=${{display:'flex',flexDirection:'column',gap:8}}>
+        <button onClick=${add} style=${{background:'var(--c)',border:'none',borderRadius:10,padding:'9px 12px',color:'#fff',fontWeight:700,fontSize:13,boxShadow:'0 2px 8px rgba(139,99,67,.25)'}}>+ New Note</button>
+        <div style=${{display:'flex',flexWrap:'wrap',gap:4}}>${labels.map(l=>html`<button key=${l} onClick=${()=>setFilter(l)} style=${{padding:'3px 10px',borderRadius:10,border:`1px solid ${filter===l?'var(--c)':'var(--br)'}`,background:filter===l?'rgba(139,99,67,.1)':'transparent',color:filter===l?'var(--c)':'var(--mu)',fontSize:11.5,fontWeight:600}}>${l}</button>`)}</div>
+        <div style=${{flex:1,overflowY:'auto',display:'flex',flexDirection:'column',gap:5}}>
+          ${filtered.map(n=>html`<div key=${n.id} onClick=${()=>setAid(n.id)} style=${{padding:'10px 12px',borderRadius:10,cursor:'pointer',background:aid===n.id?'rgba(139,99,67,.1)':'var(--off)',border:`1.5px solid ${aid===n.id?'var(--c)':'transparent'}`}}><div style=${{fontWeight:600,fontSize:12.5,color:'var(--ink)',overflow:'hidden',whiteSpace:'nowrap',textOverflow:'ellipsis'}}>${n.title||'Untitled'}</div><div style=${{fontSize:11,color:'var(--mu)',marginTop:2}}>${n.label||'—'} · ${n.created}</div></div>` )}
+          ${filtered.length===0&&html`<div style=${{color:'var(--mu)',fontSize:12.5,textAlign:'center',padding:20}}>No notes</div>`}
         </div>
-      )}
-
-      <Card style={{background:"var(--off)",borderColor:"rgba(200,168,130,.4)"}}>
-        <div style={{fontSize:11,fontWeight:700,letterSpacing:2,textTransform:"uppercase",color:"var(--cl)",marginBottom:10}}>◈ Today's Intention</div>
-        <p className="serif" style={{fontSize:15,color:"var(--ink)",lineHeight:1.75,fontStyle:"italic"}}>
-          "Show up with intention. Track your habits, advance one project, read one chapter, and call someone you love. Small edges, compounded daily, become extraordinary outcomes."
-        </p>
-      </Card>
-    </div>
-  );
-}
-
-// ─── WORK ───────────────────────────────────────────────────────────────────
-function WorkSection({data, update}) {
-  const {projects=[]} = data;
-  const [tab, setTab] = useState("Active");
-  const STATUS = ["Active","Paused","Done"];
-  const SC = {Active:"var(--c)",Paused:"var(--cl)",Done:"var(--success)"};
-  const shown = tab==="All" ? projects : projects.filter(p=>p.status===tab);
-
-  const add = name => update({...data, projects:[...projects,{id:uid(),name,status:"Active",description:"",priority:"Medium",added:today()}]});
-  const cycle = id => update({...data, projects:projects.map(p=>p.id===id?{...p,status:STATUS[(STATUS.indexOf(p.status)+1)%3]}:p)});
-  const setDesc = (id,v) => update({...data, projects:projects.map(p=>p.id===id?{...p,description:v}:p)});
-  const setPrio = (id,v) => update({...data, projects:projects.map(p=>p.id===id?{...p,priority:v}:p)});
-  const remove = id => update({...data, projects:projects.filter(p=>p.id!==id)});
-
-  return (
-    <div>
-      <SHeader title="Work" sub="Projects you're driving — stay focused, stay accountable" />
-      <AddRow placeholder="New project name..." onAdd={add} />
-      <Tabs tabs={["Active","Paused","Done","All"].map(s=>({id:s,label:`${s} (${s==="All"?projects.length:projects.filter(p=>p.status===s).length})`}))} active={tab} onSelect={setTab} />
-      {shown.length===0 && <div className="empty">No {tab.toLowerCase()} projects. {tab==="Active"?"Add one above.":""}</div>}
-      {shown.map(p=>(
-        <Card key={p.id}>
-          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
-            <div style={{flex:1}}>
-              <div style={{fontWeight:700,color:"var(--ink)",fontSize:15}}>{p.name}</div>
-              <div style={{color:"var(--muted)",fontSize:11.5,marginTop:2}}>Added {p.added}</div>
-            </div>
-            <Select value={p.priority} onChange={e=>setPrio(p.id,e.target.value)} style={{fontSize:12,padding:"4px 8px"}}>
-              <option>High</option><option>Medium</option><option>Low</option>
-            </Select>
-            <button onClick={()=>cycle(p.id)} style={{border:`1.5px solid ${SC[p.status]}`,borderRadius:8,padding:"4px 12px",background:SC[p.status]+"18",color:SC[p.status],fontSize:12,fontWeight:700}}>
-              {p.status}
-            </button>
-            <XBtn onClick={()=>remove(p.id)} />
-          </div>
-          <TextArea value={p.description} onChange={e=>setDesc(p.id,e.target.value)} placeholder="Notes, context, next steps..." style={{resize:"vertical",minHeight:70,lineHeight:1.7}} />
-        </Card>
-      ))}
-    </div>
-  );
-}
-
-// ─── HABITS ─────────────────────────────────────────────────────────────────
-function HabitsSection({data, update}) {
-  const {monthly=[],quarterly=[],yearly=[]} = data;
-  const [tab, setTab] = useState("monthly");
-  const lists = {monthly,quarterly,yearly};
-  const current = lists[tab];
-  const todayCount = current.filter(h=>h.ticks?.[today()]).length;
-
-  const add = name => update({...data,[tab]:[...current,{id:uid(),name,ticks:{}}]});
-  const remove = id => update({...data,[tab]:current.filter(h=>h.id!==id)});
-  const tick = id => update({...data,[tab]:current.map(h=>{
-    if(h.id!==id)return h;
-    return {...h,ticks:{...h.ticks,[today()]:!h.ticks?.[today()]}};
-  })});
-
-  return (
-    <div>
-      <SHeader title="Habit Stack" sub="Systems beat willpower. Build the stack, let it run." />
-      <Tabs tabs={[{id:"monthly",label:`Monthly (${monthly.length})`},{id:"quarterly",label:`Quarterly (${quarterly.length})`},{id:"yearly",label:`Yearly (${yearly.length})`}]} active={tab} onSelect={setTab} />
-      {current.length>0 && (
-        <div style={{background:"var(--off)",borderRadius:10,padding:"10px 16px",marginBottom:16,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <span style={{color:"var(--muted)",fontSize:13}}>Today's completion</span>
-          <span style={{fontWeight:700,color:"var(--c)",fontSize:15}}>{todayCount}/{current.length}</span>
+      </div>
+      ${active?html`<div style=${{display:'flex',flexDirection:'column',gap:10}}>
+        <div class="row">
+          <${FI} value=${active.title} onChange=${v=>up(active.id,'title',v)} placeholder="Title..." style=${{flex:1,fontWeight:700,fontSize:16,padding:'10px 14px'}}/>
+          <${FI} value=${active.label} onChange=${v=>up(active.id,'label',v)} placeholder="Label..." style=${{width:120}}/>
+          <button onClick=${()=>rm(active.id)} style=${{background:'rgba(168,66,66,.1)',border:'1px solid rgba(168,66,66,.3)',borderRadius:10,padding:'8px 12px',fontSize:15}}>🗑</button>
         </div>
-      )}
-      <AddRow placeholder={`Add ${tab} habit...`} onAdd={add} />
-      {current.length===0 && <div className="empty">No {tab} habits yet. Add one above.</div>}
-      {current.map(h=>{
-        const ticked = !!h.ticks?.[today()];
-        const count = Object.values(h.ticks||{}).filter(Boolean).length;
-        return (
-          <Card key={h.id} style={{borderColor:ticked?"var(--cl)":"var(--border)"}}>
-            <div style={{display:"flex",alignItems:"center",gap:12}}>
-              <button onClick={()=>tick(h.id)} style={{
-                width:28,height:28,borderRadius:8,flexShrink:0,
-                border:`2px solid ${ticked?"var(--c)":"var(--border)"}`,
-                background:ticked?"var(--c)":"var(--white)",
-                display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,
-                color:"#fff",boxShadow:ticked?"0 2px 8px rgba(139,99,67,.3)":"none"
-              }}>{ticked?"✓":""}</button>
-              <div style={{flex:1}}>
-                <div style={{color:"var(--ink)",fontWeight:600,fontSize:14,textDecoration:ticked?"line-through":"none",opacity:ticked?.6:1}}>{h.name}</div>
-                <div style={{color:"var(--muted)",fontSize:11.5,marginTop:2}}>{count} completions total</div>
-              </div>
-              {count>0 && <div style={{background:"rgba(200,168,130,.2)",border:"1px solid rgba(200,168,130,.4)",borderRadius:8,padding:"3px 10px",fontSize:12,fontWeight:700,color:"var(--c)"}}>✦ {count}</div>}
-              <XBtn onClick={()=>remove(h.id)} />
-            </div>
-          </Card>
-        );
-      })}
+        <textarea class="fi" onInput=${e=>up(active.id,'content',e.target.value)} placeholder="Write your thoughts here..." style=${{flex:1,minHeight:280,lineHeight:1.75,fontSize:14,padding:14}}>${active.content}</textarea>
+        <div style=${{color:'var(--mu)',fontSize:11}}>Created ${active.created} · Saved automatically</div>
+      </div>`:html`<div style=${{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',border:'1.5px dashed var(--br)',borderRadius:14,color:'var(--mu)',gap:10,minHeight:280}}><div style=${{fontSize:28,opacity:.4}}>◫</div><div style=${{fontSize:13.5}}>Select or create a note</div></div>`}
     </div>
-  );
+  </div>`;
 }
 
-// ─── SKILLS ─────────────────────────────────────────────────────────────────
-function SkillsSection({data, update}) {
-  const {goodAt=[],workingOn=[],wantToLearn=[]} = data;
-  const [tab, setTab] = useState("goodAt");
-  const cols = {
-    goodAt:{label:"Good At",color:"var(--success)",list:goodAt},
-    workingOn:{label:"Working On",color:"var(--c)",list:workingOn},
-    wantToLearn:{label:"Future Learn",color:"var(--cl)",list:wantToLearn},
-  };
-  const col = cols[tab];
-  const add = name => update({...data,[tab]:[...col.list,{id:uid(),name}]});
-  const remove = id => update({...data,[tab]:col.list.filter(s=>s.id!==id)});
-
-  return (
-    <div>
-      <SHeader title="Skills" sub="Map your edge, your growth edge, and your horizon" />
-      <Tabs tabs={Object.entries(cols).map(([id,c])=>({id,label:`${c.label} (${c.list.length})`}))} active={tab} onSelect={setTab} />
-      <AddRow placeholder={`Add to "${col.label}"...`} onAdd={add} />
-      <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-        {col.list.map(s=><Tag key={s.id} label={s.name} color={col.color} onRemove={()=>remove(s.id)} />)}
-        {col.list.length===0 && <p style={{color:"var(--muted)",fontSize:13.5,padding:"16px 0"}}>Nothing added yet.</p>}
+// Family
+function Family({data,update}) {
+  const {members=[]}=data; const [aid,setAid]=useState(null);
+  const add=n=>{const m={id:uid(),name:n,relationship:'',expectations:'',howToBeBetter:'',commitments:''};update({...data,members:[...members,m]});setAid(m.id);};
+  const up=(id,f,v)=>update({...data,members:members.map(m=>m.id===id?{...m,[f]:v}:m)});
+  const rm=id=>{update({...data,members:members.filter(m=>m.id!==id)});if(aid===id)setAid(null);};
+  const active=members.find(m=>m.id===aid);
+  return html`<div>
+    <${SH} title="Responsibilities" sub="Who you are to the people who matter most"/>
+    <${AddRow} placeholder="Add family member (Mum, Partner, Sibling...)..." onAdd=${add}/>
+    <div style=${{display:'flex',flexWrap:'wrap',gap:8,marginBottom:20}}>
+      ${members.map(m=>html`<button key=${m.id} onClick=${()=>setAid(m.id)} style=${{padding:'8px 16px',borderRadius:20,border:`1.5px solid ${aid===m.id?'var(--cd)':'var(--br)'}`,background:aid===m.id?'var(--cd)':'var(--off)',color:aid===m.id?'#fff':'var(--ink)',fontSize:13,fontWeight:600}}>◑ ${m.name}</button>` )}
+    </div>
+    ${active&&html`<${Card} el>
+      <div class="row" style=${{marginBottom:18}}><h3 class="serif" style=${{flex:1,fontSize:20,color:'var(--ink)',fontWeight:400}}>${active.name}</h3><button onClick=${()=>rm(active.id)} style=${{background:'rgba(168,66,66,.1)',border:'1px solid rgba(168,66,66,.3)',borderRadius:8,padding:'5px 14px',color:'var(--er)',fontSize:12.5,fontWeight:600}}>Remove</button></div>
+      <div style=${{display:'flex',flexDirection:'column',gap:10}}>
+        <${FI} value=${active.relationship} onChange=${v=>up(active.id,'relationship',v)} placeholder="Relationship (Mother, Partner, Friend...)"/>
+        <${TA} value=${active.expectations} onChange=${v=>up(active.id,'expectations',v)} placeholder="What are their expectations of you?" rows=${3}/>
+        <${TA} value=${active.howToBeBetter} onChange=${v=>up(active.id,'howToBeBetter',v)} placeholder="How can you be better for them?" rows=${3}/>
+        <${TA} value=${active.commitments} onChange=${v=>up(active.id,'commitments',v)} placeholder="Commitments you're making to them..." rows=${2}/>
       </div>
-    </div>
-  );
+    <//>` }
+    ${members.length===0&&html`<div class="empty">Add family members to map your responsibilities.</div>`}
+  </div>`;
 }
 
-// ─── WEALTH ─────────────────────────────────────────────────────────────────
-function WealthSection({data, update}) {
-  const {investments=[],expenses=[]} = data;
-  const [tab, setTab] = useState("investments");
-  const totalInv = investments.reduce((s,i)=>s+(parseFloat(i.value)||0),0);
-  const totalExp = expenses.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
-
-  const addInv = name => update({...data,investments:[...investments,{id:uid(),name,type:"",value:"",notes:""}]});
-  const updInv = (id,f,v) => update({...data,investments:investments.map(i=>i.id===id?{...i,[f]:v}:i)});
-  const remInv = id => update({...data,investments:investments.filter(i=>i.id!==id)});
-
-  const addExp = name => update({...data,expenses:[...expenses,{id:uid(),name,amount:"",category:"",date:today()}]});
-  const updExp = (id,f,v) => update({...data,expenses:expenses.map(e=>e.id===id?{...e,[f]:v}:e)});
-  const remExp = id => update({...data,expenses:expenses.filter(e=>e.id!==id)});
-
-  return (
-    <div>
-      <SHeader title="Wealth" sub="Assets tracked. Capital directed. Net worth grows." />
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:20}}>
-        <Card bgOff style={{textAlign:"center"}}>
-          <div style={{color:"var(--muted)",fontSize:11,textTransform:"uppercase",letterSpacing:1.5,marginBottom:6}}>Total Invested</div>
-          <div style={{color:"var(--ink)",fontSize:28,fontWeight:800,letterSpacing:"-1px"}}>£{totalInv.toLocaleString()}</div>
-        </Card>
-        <Card bgOff style={{textAlign:"center"}}>
-          <div style={{color:"var(--muted)",fontSize:11,textTransform:"uppercase",letterSpacing:1.5,marginBottom:6}}>Total Expenses</div>
-          <div style={{color:"var(--cd)",fontSize:28,fontWeight:800,letterSpacing:"-1px"}}>£{totalExp.toLocaleString()}</div>
-        </Card>
-      </div>
-      <Tabs tabs={[{id:"investments",label:"Investments"},{id:"expenses",label:"Expenses"}]} active={tab} onSelect={setTab} />
-
-      {tab==="investments" && (
-        <>
-          <AddRow placeholder="Asset (e.g. VWRL, Bitcoin, BTL Property)..." onAdd={addInv} />
-          {investments.length===0 && <div className="empty">No investments tracked. Add your first asset.</div>}
-          {investments.map(inv=>(
-            <Card key={inv.id}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-                <div style={{fontWeight:700,color:"var(--ink)",fontSize:14.5}}>{inv.name}</div>
-                <XBtn onClick={()=>remInv(inv.id)} />
-              </div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:8}}>
-                <Field value={inv.type} onChange={e=>updInv(inv.id,"type",e.target.value)} placeholder="Type (Stocks, Crypto...)" />
-                <Field value={inv.value} onChange={e=>updInv(inv.id,"value",e.target.value)} placeholder="Value (£)" type="number" />
-              </div>
-              <Field value={inv.notes} onChange={e=>updInv(inv.id,"notes",e.target.value)} placeholder="Notes..." />
-            </Card>
-          ))}
-        </>
-      )}
-
-      {tab==="expenses" && (
-        <>
-          <AddRow placeholder="Expense description..." onAdd={addExp} />
-          {expenses.length===0 && <div className="empty">No expenses logged yet.</div>}
-          {expenses.map(exp=>(
-            <Card key={exp.id}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-                <div style={{fontWeight:700,color:"var(--ink)",fontSize:14.5}}>{exp.name}</div>
-                <XBtn onClick={()=>remExp(exp.id)} />
-              </div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
-                <Field value={exp.amount} onChange={e=>updExp(exp.id,"amount",e.target.value)} placeholder="Amount (£)" type="number" />
-                <Field value={exp.category} onChange={e=>updExp(exp.id,"category",e.target.value)} placeholder="Category" />
-                <Field value={exp.date} onChange={e=>updExp(exp.id,"date",e.target.value)} type="date" />
-              </div>
-            </Card>
-          ))}
-        </>
-      )}
-    </div>
-  );
+// Wishes
+function Wishes({data,update}) {
+  const {items=[]}=data; const [tab,setTab]=useState('pending');
+  const pending=items.filter(i=>!i.done); const done=items.filter(i=>i.done); const shown=tab==='pending'?pending:done;
+  const pct=items.length>0?Math.round((done.length/items.length)*100):0;
+  const add=n=>update({...data,items:[...items,{id:uid(),name:n,done:false,added:today(),doneDate:null}]});
+  const tog=id=>update({...data,items:items.map(i=>i.id===id?{...i,done:!i.done,doneDate:!i.done?today():null}:i)});
+  const rm=id=>update({...data,items:items.filter(i=>i.id!==id)});
+  return html`<div>
+    <${SH} title="Wish List" sub=${`${done.length} of ${items.length} wishes fulfilled`}/>
+    ${items.length>0&&html`<${Card} bg style=${{marginBottom:20}}><div style=${{display:'flex',justifyContent:'space-between',marginBottom:10}}><span style=${{color:'var(--mu)',fontSize:13}}>Fulfilment progress</span><span style=${{fontWeight:700,color:'var(--c)',fontSize:13}}>${pct}%</span></div><${PBar} value=${pct}/><//>` }
+    <${Tabs} tabs=${[{id:'pending',label:`Pending (${pending.length})`},{id:'done',label:`Fulfilled (${done.length})`}]} active=${tab} onSelect=${setTab}/>
+    ${tab==='pending'&&html`<${AddRow} placeholder="Add a wish..." onAdd=${add}/>`}
+    ${shown.length===0&&html`<div class="empty">${tab==='pending'?"Dream big. Add your first wish.":"Nothing fulfilled yet — it's coming."}</div>`}
+    ${shown.map(w=>html`<div key=${w.id} style=${{display:'flex',alignItems:'flex-start',gap:12,padding:'13px 0',borderBottom:'1px solid var(--br)'}}>
+      <button onClick=${()=>tog(w.id)} style=${{width:24,height:24,borderRadius:7,flexShrink:0,marginTop:1,border:`2px solid ${w.done?'var(--c)':'var(--br)'}`,background:w.done?'var(--c)':'var(--w)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,color:'#fff',padding:0,boxShadow:w.done?'0 2px 8px rgba(139,99,67,.3)':'none'}}>${w.done?'✓':''}</button>
+      <div style=${{flex:1}}><div style=${{color:w.done?'var(--mu)':'var(--ink)',fontSize:14,fontWeight:500,textDecoration:w.done?'line-through':'none'}}>${w.name}</div><div style=${{color:'var(--mu)',fontSize:11.5,marginTop:2}}>${w.done?`✦ Fulfilled ${w.doneDate}`:`Added ${w.added}`}</div></div>
+      <${XBtn} onClick=${()=>rm(w.id)}/>
+    </div>` )}
+  </div>`;
 }
 
-// ─── LEARNING ───────────────────────────────────────────────────────────────
-function LearningSection({data, update}) {
-  const {current=[],wishlist=[]} = data;
-  const [tab, setTab] = useState("current");
-
-  const addC = name => update({...data,current:[...current,{id:uid(),name,platform:"",progress:0,notes:""}]});
-  const updC = (id,f,v) => update({...data,current:current.map(c=>c.id===id?{...c,[f]:v}:c)});
-  const remC = id => update({...data,current:current.filter(c=>c.id!==id)});
-  const addW = name => update({...data,wishlist:[...wishlist,{id:uid(),name,priority:"Medium"}]});
-  const updW = (id,f,v) => update({...data,wishlist:wishlist.map(w=>w.id===id?{...w,[f]:v}:w)});
-  const remW = id => update({...data,wishlist:wishlist.filter(w=>w.id!==id)});
-
-  return (
-    <div>
-      <SHeader title="Learning" sub="Your mind is the highest returning asset. Keep compounding." />
-      <Tabs tabs={[{id:"current",label:`In Progress (${current.length})`},{id:"wishlist",label:`Wishlist (${wishlist.length})`}]} active={tab} onSelect={setTab} />
-      <AddRow placeholder={tab==="current"?"Course name...":"Course you want to take..."} onAdd={tab==="current"?addC:addW} />
-
-      {tab==="current" && (
-        <>
-          {current.length===0 && <div className="empty">No active courses. Start one.</div>}
-          {current.map(c=>(
-            <Card key={c.id}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-                <div style={{fontWeight:700,color:"var(--ink)",fontSize:15}}>{c.name}</div>
-                <XBtn onClick={()=>remC(c.id)} />
-              </div>
-              <Field value={c.platform} onChange={e=>updC(c.id,"platform",e.target.value)} placeholder="Platform (Coursera, YouTube, Udemy...)" style={{marginBottom:12}} />
-              <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:10}}>
-                <span style={{color:"var(--muted)",fontSize:12.5,minWidth:56}}>Progress</span>
-                <input type="range" min={0} max={100} value={c.progress} onChange={e=>updC(c.id,"progress",+e.target.value)} style={{flex:1}} />
-                <span style={{color:"var(--c)",fontWeight:700,fontSize:13.5,minWidth:36}}>{c.progress}%</span>
-              </div>
-              <ProgressBar value={c.progress} />
-              <TextArea value={c.notes} onChange={e=>updC(c.id,"notes",e.target.value)} placeholder="Notes, key learnings..." style={{resize:"vertical",minHeight:60,marginTop:12,lineHeight:1.6}} />
-            </Card>
-          ))}
-        </>
-      )}
-
-      {tab==="wishlist" && (
-        <>
-          {wishlist.length===0 && <div className="empty">Nothing in your learning wishlist yet.</div>}
-          {wishlist.map(w=>(
-            <Card key={w.id}>
-              <div style={{display:"flex",alignItems:"center",gap:10}}>
-                <div style={{flex:1,fontWeight:600,color:"var(--ink)",fontSize:14}}>{w.name}</div>
-                <Select value={w.priority} onChange={e=>updW(w.id,"priority",e.target.value)} style={{padding:"5px 8px",fontSize:12}}>
-                  <option>High</option><option>Medium</option><option>Low</option>
-                </Select>
-                <XBtn onClick={()=>remW(w.id)} />
-              </div>
-            </Card>
-          ))}
-        </>
-      )}
-    </div>
-  );
-}
-
-// ─── READING ────────────────────────────────────────────────────────────────
-function ReadingSection({data, update}) {
-  const {current=[],wishlist={}} = data;
-  const [tab, setTab] = useState("current");
-  const [cat, setCat] = useState("Business");
-
-  const addB = name => update({...data,current:[...current,{id:uid(),name,author:"",progress:0}]});
-  const updB = (id,f,v) => update({...data,current:current.map(b=>b.id===id?{...b,[f]:v}:b)});
-  const remB = id => update({...data,current:current.filter(b=>b.id!==id)});
-  const addW = name => { const l=wishlist[cat]||[]; update({...data,wishlist:{...wishlist,[cat]:[...l,{id:uid(),name}]}}); };
-  const remW = id => update({...data,wishlist:{...wishlist,[cat]:(wishlist[cat]||[]).filter(b=>b.id!==id)}});
-  const totalWish = READING_CATS.reduce((s,c)=>s+(wishlist[c]?.length||0),0);
-
-  return (
-    <div>
-      <SHeader title="Reading" sub={`Leaders are readers. ${current.length} in progress · ${totalWish} queued`} />
-      <Tabs tabs={[{id:"current",label:`Reading Now (${current.length})`},{id:"wishlist",label:`To Read (${totalWish})`}]} active={tab} onSelect={setTab} />
-      <AddRow placeholder={tab==="current"?"Book title...":`Add to ${cat}...`} onAdd={tab==="current"?addB:addW} />
-
-      {tab==="current" && (
-        <>
-          {current.length===0 && <div className="empty">Nothing in progress. What are you reading?</div>}
-          {current.map(b=>(
-            <Card key={b.id}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-                <div style={{fontWeight:700,color:"var(--ink)",fontSize:15}}>{b.name}</div>
-                <XBtn onClick={()=>remB(b.id)} />
-              </div>
-              <Field value={b.author} onChange={e=>updB(b.id,"author",e.target.value)} placeholder="Author" style={{marginBottom:12}} />
-              <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:10}}>
-                <span style={{color:"var(--muted)",fontSize:12.5,minWidth:56}}>Progress</span>
-                <input type="range" min={0} max={100} value={b.progress} onChange={e=>updB(b.id,"progress",+e.target.value)} style={{flex:1}} />
-                <span style={{color:"var(--cd)",fontWeight:700,fontSize:13.5,minWidth:36}}>{b.progress}%</span>
-              </div>
-              <ProgressBar value={b.progress} color="var(--cd)" />
-            </Card>
-          ))}
-        </>
-      )}
-
-      {tab==="wishlist" && (
-        <>
-          <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:16}}>
-            {READING_CATS.map(c=>(
-              <button key={c} onClick={()=>setCat(c)} className={`tab-btn${cat===c?" active":""}`} style={cat===c?{background:"var(--cd)",borderColor:"var(--cd)"}:{}}>{c} ({(wishlist[c]||[]).length})</button>
-            ))}
-          </div>
-          {(wishlist[cat]||[]).length===0 && <p style={{color:"var(--muted)",fontSize:13,padding:"20px 0"}}>No {cat} books queued.</p>}
-          {(wishlist[cat]||[]).map(b=>(
-            <div key={b.id} style={{display:"flex",alignItems:"center",padding:"11px 0",borderBottom:"1px solid var(--border)",gap:10}}>
-              <div style={{width:6,height:6,borderRadius:99,background:"var(--cl)",flexShrink:0}} />
-              <div style={{flex:1,color:"var(--ink)",fontSize:13.5}}>{b.name}</div>
-              <XBtn onClick={()=>remW(b.id)} />
-            </div>
-          ))}
-        </>
-      )}
-    </div>
-  );
-}
-
-// ─── NOTES ──────────────────────────────────────────────────────────────────
-function NotesSection({data, update}) {
-  const {items=[]} = data;
-  const [activeId, setActiveId] = useState(null);
-  const [filter, setFilter] = useState("All");
-  const labels = ["All",...Array.from(new Set(items.map(n=>n.label).filter(Boolean)))];
-  const filtered = filter==="All" ? items : items.filter(n=>n.label===filter);
-  const active = items.find(n=>n.id===activeId);
-
-  const addNote = () => {
-    const n = {id:uid(),title:"Untitled Note",content:"",label:"",created:today()};
-    update({...data,items:[n,...items]});
-    setActiveId(n.id);
-  };
-  const updN = (id,f,v) => update({...data,items:items.map(n=>n.id===id?{...n,[f]:v}:n)});
-  const remN = id => { update({...data,items:items.filter(n=>n.id!==id)}); if(activeId===id)setActiveId(null); };
-
-  return (
-    <div>
-      <SHeader title="Notes" sub="Capture it now. Refine it later. Build your second brain." />
-      <div style={{display:"grid",gridTemplateColumns:"200px 1fr",gap:16,minHeight:400}}>
-        <div style={{display:"flex",flexDirection:"column",gap:8}}>
-          <button onClick={addNote} style={{background:"var(--c)",border:"none",borderRadius:10,padding:"9px 12px",color:"#fff",fontWeight:700,fontSize:13,boxShadow:"0 2px 8px rgba(139,99,67,.25)"}}>+ New Note</button>
-          <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
-            {labels.map(l=>(
-              <button key={l} onClick={()=>setFilter(l)} style={{padding:"3px 10px",borderRadius:10,border:`1px solid ${filter===l?"var(--c)":"var(--border)"}`,background:filter===l?"rgba(139,99,67,.1)":"transparent",color:filter===l?"var(--c)":"var(--muted)",fontSize:11.5,fontWeight:600}}>{l}</button>
-            ))}
-          </div>
-          <div style={{flex:1,overflowY:"auto",display:"flex",flexDirection:"column",gap:5}}>
-            {filtered.map(n=>(
-              <div key={n.id} onClick={()=>setActiveId(n.id)} style={{padding:"10px 12px",borderRadius:10,cursor:"pointer",background:activeId===n.id?"rgba(139,99,67,.1)":"var(--off)",border:`1.5px solid ${activeId===n.id?"var(--c)":"transparent"}`}}>
-                <div style={{fontWeight:600,fontSize:12.5,color:"var(--ink)",overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis"}}>{n.title||"Untitled"}</div>
-                <div style={{fontSize:11,color:"var(--muted)",marginTop:2}}>{n.label||"—"} · {n.created}</div>
-              </div>
-            ))}
-            {filtered.length===0 && <div style={{color:"var(--muted)",fontSize:12.5,textAlign:"center",padding:20}}>No notes</div>}
-          </div>
-        </div>
-        {active ? (
-          <div style={{display:"flex",flexDirection:"column",gap:10}}>
-            <div style={{display:"flex",gap:8}}>
-              <Field value={active.title} onChange={e=>updN(active.id,"title",e.target.value)} placeholder="Title..." style={{flex:1,fontWeight:700,fontSize:16,padding:"10px 14px"}} />
-              <Field value={active.label} onChange={e=>updN(active.id,"label",e.target.value)} placeholder="Label..." style={{width:120}} />
-              <button onClick={()=>remN(active.id)} style={{background:"rgba(168,66,66,.1)",border:"1px solid rgba(168,66,66,.3)",borderRadius:10,padding:"8px 12px",fontSize:15}}>🗑</button>
-            </div>
-            <TextArea value={active.content} onChange={e=>updN(active.id,"content",e.target.value)} placeholder="Write your thoughts here..." style={{flex:1,resize:"none",lineHeight:1.75,fontSize:14,padding:14,minHeight:280}} />
-            <div style={{color:"var(--muted)",fontSize:11}}>Created {active.created} · Changes saved automatically</div>
-          </div>
-        ) : (
-          <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",border:"1.5px dashed var(--border)",borderRadius:14,color:"var(--muted)",gap:10,minHeight:280}}>
-            <div style={{fontSize:28,opacity:.4}}>◫</div>
-            <div style={{fontSize:13.5}}>Select or create a note</div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ─── FAMILY ─────────────────────────────────────────────────────────────────
-function FamilySection({data, update}) {
-  const {members=[]} = data;
-  const [activeId, setActiveId] = useState(null);
-  const add = name => { const m={id:uid(),name,relationship:"",expectations:"",howToBeBetter:"",commitments:""}; update({...data,members:[...members,m]}); setActiveId(m.id); };
-  const updM = (id,f,v) => update({...data,members:members.map(m=>m.id===id?{...m,[f]:v}:m)});
-  const remM = id => { update({...data,members:members.filter(m=>m.id!==id)}); if(activeId===id)setActiveId(null); };
-  const active = members.find(m=>m.id===activeId);
-
-  return (
-    <div>
-      <SHeader title="Responsibilities" sub="Who you are to the people who matter most" />
-      <AddRow placeholder="Add family member (Mum, Partner, Sibling...)..." onAdd={add} />
-      <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:20}}>
-        {members.map(m=>(
-          <button key={m.id} onClick={()=>setActiveId(m.id)} style={{padding:"8px 16px",borderRadius:20,border:`1.5px solid ${activeId===m.id?"var(--cd)":"var(--border)"}`,background:activeId===m.id?"var(--cd)":"var(--off)",color:activeId===m.id?"#fff":"var(--ink)",fontSize:13,fontWeight:600}}>
-            ◑ {m.name}
-          </button>
-        ))}
-      </div>
-      {active && (
-        <Card elevated>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
-            <h3 className="serif" style={{fontSize:20,color:"var(--ink)",fontWeight:400}}>{active.name}</h3>
-            <button onClick={()=>remM(active.id)} style={{background:"rgba(168,66,66,.1)",border:"1px solid rgba(168,66,66,.3)",borderRadius:8,padding:"5px 14px",color:"var(--danger)",fontSize:12.5,fontWeight:600}}>Remove</button>
-          </div>
-          <div style={{display:"flex",flexDirection:"column",gap:10}}>
-            <Field value={active.relationship} onChange={e=>updM(active.id,"relationship",e.target.value)} placeholder="Relationship (Mother, Partner, Friend...)" />
-            <TextArea value={active.expectations} onChange={e=>updM(active.id,"expectations",e.target.value)} placeholder="What are their expectations of you?" rows={3} style={{resize:"vertical",lineHeight:1.65}} />
-            <TextArea value={active.howToBeBetter} onChange={e=>updM(active.id,"howToBeBetter",e.target.value)} placeholder="How can you be better for them?" rows={3} style={{resize:"vertical",lineHeight:1.65}} />
-            <TextArea value={active.commitments} onChange={e=>updM(active.id,"commitments",e.target.value)} placeholder="Commitments you're making to them..." rows={2} style={{resize:"vertical",lineHeight:1.65}} />
-          </div>
-        </Card>
-      )}
-      {members.length===0 && <div className="empty">Add family members to map your responsibilities.</div>}
-    </div>
-  );
-}
-
-// ─── WISHES ─────────────────────────────────────────────────────────────────
-function WishesSection({data, update}) {
-  const {items=[]} = data;
-  const [tab, setTab] = useState("pending");
-  const pending = items.filter(i=>!i.done);
-  const done = items.filter(i=>i.done);
-  const shown = tab==="pending" ? pending : done;
-  const pct = items.length>0 ? Math.round((done.length/items.length)*100) : 0;
-
-  const add = name => update({...data,items:[...items,{id:uid(),name,done:false,added:today(),doneDate:null}]});
-  const toggle = id => update({...data,items:items.map(i=>i.id===id?{...i,done:!i.done,doneDate:!i.done?today():null}:i)});
-  const remove = id => update({...data,items:items.filter(i=>i.id!==id)});
-
-  return (
-    <div>
-      <SHeader title="Wish List" sub={`${done.length} of ${items.length} wishes fulfilled`} />
-      {items.length>0 && (
-        <Card bgOff style={{marginBottom:20}}>
-          <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}>
-            <span style={{color:"var(--muted)",fontSize:13}}>Fulfilment progress</span>
-            <span style={{fontWeight:700,color:"var(--c)",fontSize:13}}>{pct}%</span>
-          </div>
-          <ProgressBar value={pct} />
-        </Card>
-      )}
-      <Tabs tabs={[{id:"pending",label:`Pending (${pending.length})`},{id:"done",label:`Fulfilled (${done.length})`}]} active={tab} onSelect={setTab} />
-      {tab==="pending" && <AddRow placeholder="Add a wish..." onAdd={add} />}
-      {shown.length===0 && <div className="empty">{tab==="pending"?"Dream big. Add your first wish.":"Nothing fulfilled yet — it's coming."}</div>}
-      {shown.map(w=>(
-        <div key={w.id} style={{display:"flex",alignItems:"flex-start",gap:12,padding:"13px 0",borderBottom:"1px solid var(--border)"}}>
-          <button onClick={()=>toggle(w.id)} style={{
-            width:24,height:24,borderRadius:7,flexShrink:0,marginTop:1,
-            border:`2px solid ${w.done?"var(--c)":"var(--border)"}`,
-            background:w.done?"var(--c)":"var(--white)",
-            display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#fff",
-            boxShadow:w.done?"0 2px 8px rgba(139,99,67,.3)":"none"
-          }}>{w.done?"✓":""}</button>
-          <div style={{flex:1}}>
-            <div style={{color:w.done?"var(--muted)":"var(--ink)",fontSize:14,fontWeight:500,textDecoration:w.done?"line-through":"none"}}>{w.name}</div>
-            <div style={{color:"var(--muted)",fontSize:11.5,marginTop:2}}>{w.done?`✦ Fulfilled ${w.doneDate}`:`Added ${w.added}`}</div>
-          </div>
-          <XBtn onClick={()=>remove(w.id)} />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ─── APP ROOT ────────────────────────────────────────────────────────────────
+// Root App
 function App() {
-  const [section, setSection] = useState("dashboard");
-  const [data, setData] = useState(() => loadData());
-  const [navOpen, setNavOpen] = useState(false);
-
-  const update = (key, val) => {
-    const d = {...data,[key]:val};
-    setData(d);
-    save(d);
+  const [sec,setSec]=useState('dashboard');
+  const [data,setData]=useState(()=>ls());
+  const [nav,setNav]=useState(false);
+  const upd=(key,val)=>{ const d={...data,[key]:val}; setData(d); sv(d); };
+  const goto=id=>{setSec(id);setNav(false);};
+  const ds=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+  const views={
+    dashboard:html`<${Dashboard} data=${data} goto=${goto}/>`,
+    work:html`<${Work} data=${data.work} update=${v=>upd('work',v)}/>`,
+    habits:html`<${Habits} data=${data.habits} update=${v=>upd('habits',v)}/>`,
+    skills:html`<${Skills} data=${data.skills} update=${v=>upd('skills',v)}/>`,
+    wealth:html`<${Wealth} data=${data.wealth} update=${v=>upd('wealth',v)}/>`,
+    learning:html`<${Learning} data=${data.learning} update=${v=>upd('learning',v)}/>`,
+    reading:html`<${Reading} data=${data.reading} update=${v=>upd('reading',v)}/>`,
+    notes:html`<${Notes} data=${data.notes} update=${v=>upd('notes',v)}/>`,
+    family:html`<${Family} data=${data.family} update=${v=>upd('family',v)}/>`,
+    wishes:html`<${Wishes} data=${data.wishes} update=${v=>upd('wishes',v)}/>`,
   };
-
-  const goto = id => { setSection(id); setNavOpen(false); };
-
-  const views = {
-    dashboard: <Dashboard data={data} goto={goto} />,
-    work:      <WorkSection data={data.work} update={v=>update("work",v)} />,
-    habits:    <HabitsSection data={data.habits} update={v=>update("habits",v)} />,
-    skills:    <SkillsSection data={data.skills} update={v=>update("skills",v)} />,
-    wealth:    <WealthSection data={data.wealth} update={v=>update("wealth",v)} />,
-    learning:  <LearningSection data={data.learning} update={v=>update("learning",v)} />,
-    reading:   <ReadingSection data={data.reading} update={v=>update("reading",v)} />,
-    notes:     <NotesSection data={data.notes} update={v=>update("notes",v)} />,
-    family:    <FamilySection data={data.family} update={v=>update("family",v)} />,
-    wishes:    <WishesSection data={data.wishes} update={v=>update("wishes",v)} />,
-  };
-
-  return (
-    <div id="app">
-      {/* Mobile hamburger */}
-      <button className="hamburger" onClick={()=>setNavOpen(!navOpen)}>☰</button>
-
-      {/* Sidebar */}
-      <nav className={navOpen?"open":""}>
-        <div className="logo">
-          <div className="tag">◈ LifeOS</div>
-          <div className="name serif">Command<br/>Centre</div>
-          <div className="date">{new Date().toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"})}</div>
-        </div>
-        <div className="nav-items">
-          {SECTIONS.map(s=>(
-            <button key={s.id} className={`nav-btn${section===s.id?" active":""}`} onClick={()=>goto(s.id)}>
-              <span style={{fontSize:14,opacity:.7}}>{s.icon}</span>
-              <span>{s.label}</span>
-            </button>
-          ))}
-        </div>
-        <div className="nav-footer">Data saved locally<br/>to your browser 🔒</div>
-      </nav>
-
-      {/* Main content */}
-      <main>
-        <div className="panel">
-          {views[section]}
-        </div>
-      </main>
-    </div>
-  );
+  return html`<div class="app">
+    ${nav&&html`<div class="overlay show" onClick=${()=>setNav(false)}></div>`}
+    <button class="hb" onClick=${()=>setNav(!nav)}>☰</button>
+    <nav class=${nav?'open':''}>
+      <div class="nav-logo"><div class="nav-tag">◈ LifeOS</div><div class="nav-name serif">Command<br/>Centre</div><div class="nav-date">${ds}</div></div>
+      <div class="nav-list">${SECS.map(s=>html`<button key=${s.id} class=${'nb'+(sec===s.id?' on':'')} onClick=${()=>goto(s.id)}><span style=${{fontSize:14,opacity:.7}}>${s.icon}</span><span>${s.label}</span></button>`)}</div>
+      <div class="nav-foot">Data saved locally<br/>to your browser 🔒</div>
+    </nav>
+    <main><div class="panel">${views[sec]}</div></main>
+  </div>`;
 }
 
-ReactDOM.createRoot(document.getElementById("app")).render(<App />);
+createRoot(document.getElementById('root')).render(html`<${App}/>`);
 </script>
 </body>
 </html>
