@@ -1,4 +1,4 @@
-import { Capacitor } from '@capacitor/core'
+
 import {
   GoogleAuthProvider,
   browserLocalPersistence,
