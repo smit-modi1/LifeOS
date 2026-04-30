@@ -142,7 +142,7 @@ const MenuSection = ({
             key={item.id} 
             className="list-item section-row" 
             onClick={() => goTo(item.id)}
-            style={{border: 'none', background: 'var(--surface)', padding: '16px 20px', borderRadius: '16px', boxShadow: 'var(--shadow-sm)'}}
+            style={{border: 'none', background: 'var(--surface)', color: 'var(--ink)', padding: '16px 20px', borderRadius: '16px', boxShadow: 'var(--shadow-sm)'}}
           >
             <div style={{display: 'flex', alignItems: 'center', gap: '12px', fontSize: '16px', fontWeight: 600}}>
               <span style={{fontSize: '20px'}}>{item.icon}</span>
@@ -184,6 +184,25 @@ function App() {
     return localStorage.getItem('lifeos-theme') === 'dark'
   })
 
+  // Hook for Android/Swipe Back Button
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state && e.state.section) {
+        setActiveSection(e.state.section)
+      } else {
+        setActiveSection('dashboard')
+      }
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  const navigate = (section: SectionId | 'menu') => {
+    if (section === activeSection) return
+    window.history.pushState({ section }, '')
+    setActiveSection(section)
+  }
+
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.setAttribute('data-theme', 'dark')
@@ -196,7 +215,7 @@ function App() {
 
   const renderSection = () => {
     switch (activeSection) {
-      case 'dashboard': return <DashboardSection data={data} goTo={setActiveSection} />
+      case 'dashboard': return <DashboardSection data={data} goTo={navigate} />
       case 'work': return <WorkSection data={data.work} onChange={(value) => updateModule('work', value)} />
       case 'habits': return <HabitsSection data={data.habits} onChange={(value) => updateModule('habits', value)} />
       case 'wealth': return <WealthSection data={data.wealth} onChange={(value) => updateModule('wealth', value)} />
@@ -207,7 +226,7 @@ function App() {
       case 'notes': return <NotesSection data={data.notes} onChange={(value) => updateModule('notes', value)} />
       case 'family': return <FamilySection data={data.family} onChange={(value) => updateModule('family', value)} />
       case 'wishes': return <WishesSection data={data.wishes} onChange={(value) => updateModule('wishes', value)} />
-      case 'menu': return <MenuSection goTo={setActiveSection} signOut={signOut} email={user?.email || undefined} />
+      case 'menu': return <MenuSection goTo={navigate} signOut={signOut} email={user?.email || undefined} />
       default: return null
     }
   }
@@ -254,7 +273,7 @@ function App() {
           <button
             key={item.id}
             className={`section-nav__button nav-tab-${item.id} ${item.id === activeSection ? 'section-nav__button--active' : ''}`}
-            onClick={() => setActiveSection(item.id)}
+            onClick={() => navigate(item.id)}
             type="button"
             style={{flex: 1}}
           >

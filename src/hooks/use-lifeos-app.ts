@@ -52,9 +52,15 @@ export const useLifeOsApp = () => {
 
       setRepositoryKind('firebase')
       setMode('loading')
-      const nextData = await firebaseRepository.load(nextUser.uid)
-      setData(nextData)
-      setMode('ready')
+      try {
+        const nextData = await firebaseRepository.load(nextUser.uid)
+        setData(nextData)
+        setMode('ready')
+      } catch (e) {
+        setError(getFirebaseMessage(e) + " (Check Firebase Firestore rules)")
+        await signOutUser(env)
+        setMode('auth')
+      }
     })
   }, [])
 

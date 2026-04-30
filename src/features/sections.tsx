@@ -328,6 +328,24 @@ export const ProfileSection = ({
   )
 }
 
+const getGoogleCalendarUrl = (title: string, dueDate: string | null) => {
+  const baseUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+  const encodedTitle = encodeURIComponent(title)
+  let datesQuery = ''
+  
+  if (dueDate) {
+    const d = new Date(dueDate)
+    if (!isNaN(d.getTime())) {
+      const start = d.toISOString().split('T')[0].replace(/-/g, '')
+      d.setDate(d.getDate() + 1)
+      const end = d.toISOString().split('T')[0].replace(/-/g, '')
+      datesQuery = `&dates=${start}/${end}`
+    }
+  }
+  
+  return `${baseUrl}&text=${encodedTitle}${datesQuery}`
+}
+
 export const WorkSection = ({
   data,
   onChange,
@@ -444,6 +462,61 @@ export const WorkSection = ({
                     const updatedTasks = removeArrayItem(project.tasks || [], task.id)
                     onChange({ projects: setArrayItem(data.projects, project.id, { tasks: updatedTasks }) })
                   }}>✕</button>
+                </div>
+                <div className="section-row" style={{marginTop: '8px', paddingLeft: '32px', gap: '8px', flexWrap: 'wrap'}}>
+                  <input
+                    type="date"
+                    className="field"
+                    style={{padding: '4px 8px', fontSize: '12px', width: 'auto'}}
+                    value={task.dueDate || ''}
+                    onChange={(e) => {
+                      const updatedTasks = setArrayItem(project.tasks || [], task.id, {dueDate: e.target.value})
+                      onChange({ projects: setArrayItem(data.projects, project.id, { tasks: updatedTasks }) })
+                    }}
+                  />
+                  <Select
+                    value={task.priority || 'P4'}
+                    style={{padding: '4px 8px', fontSize: '12px', width: 'auto'}}
+                    onChange={(e) => {
+                      const updatedTasks = setArrayItem(project.tasks || [], task.id, {priority: e.target.value as 'P1'|'P2'|'P3'|'P4'})
+                      onChange({ projects: setArrayItem(data.projects, project.id, { tasks: updatedTasks }) })
+                    }}
+                  >
+                    <option value="P1">P1</option>
+                    <option value="P2">P2</option>
+                    <option value="P3">P3</option>
+                    <option value="P4">P4</option>
+                  </Select>
+                  <Select
+                    value={project.id}
+                    style={{padding: '4px 8px', fontSize: '12px', width: 'auto', maxWidth: '120px'}}
+                    onChange={(e) => {
+                      const newProjectId = e.target.value;
+                      if (newProjectId === project.id) return;
+                      const targetProject = data.projects.find(p => p.id === newProjectId);
+                      if (!targetProject) return;
+                      // Remove from current
+                      const remainingTasks = removeArrayItem(project.tasks || [], task.id);
+                      let nextProjects = setArrayItem(data.projects, project.id, { tasks: remainingTasks });
+                      // Add to target
+                      const updatedTargetTasks = [...(targetProject.tasks || []), task];
+                      nextProjects = setArrayItem(nextProjects, newProjectId, { tasks: updatedTargetTasks });
+                      onChange({ projects: nextProjects });
+                    }}
+                  >
+                    {data.projects.map(p => (
+                      <option key={p.id} value={p.id}>Move to: {p.name}</option>
+                    ))}
+                  </Select>
+                  <a
+                    href={getGoogleCalendarUrl(task.title, task.dueDate)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="button button--ghost"
+                    style={{padding: '4px 8px', fontSize: '12px', textDecoration: 'none', color: 'var(--c-orange)'}}
+                  >
+                    + Calendar
+                  </a>
                 </div>
               </div>
             ))}
@@ -1312,6 +1385,39 @@ export const WishesSection = ({
             </div>
           </div>
           <p className="muted">{item.done ? `Fulfilled ${item.doneDate}` : `Added ${item.addedOn}`}</p>
+          {!item.done && (
+            <div className="section-row" style={{gap: '8px', flexWrap: 'wrap', marginTop: '8px'}}>
+              <input
+                type="date"
+                className="field"
+                style={{padding: '4px 8px', fontSize: '12px', width: 'auto'}}
+                value={item.dueDate || ''}
+                onChange={(e) => {
+                  onChange({ items: setArrayItem(data.items, item.id, {dueDate: e.target.value}) })
+                }}
+              />
+              <Select
+                value={item.priority || 'Low'}
+                style={{padding: '4px 8px', fontSize: '12px', width: 'auto'}}
+                onChange={(e) => {
+                  onChange({ items: setArrayItem(data.items, item.id, {priority: e.target.value as 'Low'|'Medium'|'High'}) })
+                }}
+              >
+                <option value="Low">Low Priority</option>
+                <option value="Medium">Medium Priority</option>
+                <option value="High">High Priority</option>
+              </Select>
+              <a
+                href={getGoogleCalendarUrl(item.name, item.dueDate || null)}
+                target="_blank"
+                rel="noreferrer"
+                className="button button--ghost"
+                style={{padding: '4px 8px', fontSize: '12px', textDecoration: 'none', color: 'var(--c-orange)'}}
+              >
+                + Calendar
+              </a>
+            </div>
+          )}
         </ShellCard>
       ))}
     </div>

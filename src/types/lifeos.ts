@@ -154,6 +154,8 @@ export interface WishItem extends BaseRecord {
   done: boolean
   addedOn: string
   doneDate: string | null
+  dueDate?: string | null
+  priority?: 'Low' | 'Medium' | 'High'
 }
 
 export interface LifeOsData {
