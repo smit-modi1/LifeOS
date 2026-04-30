@@ -61,9 +61,11 @@ export const useLifeOsApp = () => {
         setData(nextData)
         setMode('ready')
       } catch (e) {
-        setError(getFirebaseMessage(e) + " (Check Firebase Firestore rules)")
-        await signOutUser(env)
-        setMode('auth')
+        // Data load failed (new user has no Firestore data yet, or rules issue)
+        // Don't sign them out — just start fresh with empty data
+        console.warn('Firestore load failed, using empty data:', getFirebaseMessage(e))
+        setData(createEmptyLifeOsData())
+        setMode('ready')
       }
     })
   }, [])
