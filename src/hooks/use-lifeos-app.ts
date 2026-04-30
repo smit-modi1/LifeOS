@@ -42,32 +42,41 @@ export const useLifeOsApp = () => {
       return
     }
 
-    // Capture Google redirect result on page load (after Google auth redirect)
-    void getGoogleRedirectResult(env).catch(() => undefined)
+    let unsubscribe = () => {}
 
-    return watchAuth(env, async (nextUser) => {
-      setUser(nextUser)
-      setError(null)
+    const init = async () => {
+      // MUST await this before setting up onAuthStateChanged.
+      // Firebase fires onAuthStateChanged(null) immediately on page load, before
+      // processing the redirect credential. If we don't wait, the user gets
+      // bounced back to the login screen right away.
+      await getGoogleRedirectResult(env).catch(() => undefined)
 
-      if (!nextUser) {
-        setMode('auth')
-        return
-      }
+      unsubscribe = watchAuth(env, async (nextUser) => {
+        setUser(nextUser)
+        setError(null)
 
-      setRepositoryKind('firebase')
-      setMode('loading')
-      try {
-        const nextData = await firebaseRepository.load(nextUser.uid)
-        setData(nextData)
-        setMode('ready')
-      } catch (e) {
-        // Data load failed (new user has no Firestore data yet, or rules issue)
-        // Don't sign them out — just start fresh with empty data
-        console.warn('Firestore load failed, using empty data:', getFirebaseMessage(e))
-        setData(createEmptyLifeOsData())
-        setMode('ready')
-      }
-    })
+        if (!nextUser) {
+          setMode('auth')
+          return
+        }
+
+        setRepositoryKind('firebase')
+        setMode('loading')
+        try {
+          const nextData = await firebaseRepository.load(nextUser.uid)
+          setData(nextData)
+          setMode('ready')
+        } catch (e) {
+          // New user has no Firestore data yet — start with empty data, don't sign out
+          console.warn('Firestore load failed, using empty data:', getFirebaseMessage(e))
+          setData(createEmptyLifeOsData())
+          setMode('ready')
+        }
+      })
+    }
+
+    void init()
+    return () => unsubscribe()
   }, [])
 
   const loadLocalMode = async () => {
