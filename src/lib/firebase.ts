@@ -4,10 +4,10 @@ import {
   browserLocalPersistence,
   createUserWithEmailAndPassword,
   getAuth,
+  getRedirectResult,
   onAuthStateChanged,
   setPersistence,
   signInWithEmailAndPassword,
-  signInWithPopup,
   signInWithRedirect,
   signOut,
   type User,
@@ -105,13 +105,19 @@ export const signInWithGoogle = async (env: FirebaseEnv) => {
   }
 
   const provider = new GoogleAuthProvider()
+  // Use redirect for both web and native — popups are blocked by most browsers
+  await signInWithRedirect(current.auth, provider)
+}
 
-  if (Capacitor.isNativePlatform()) {
-    await signInWithRedirect(current.auth, provider)
-    return
+export const getGoogleRedirectResult = async (env: FirebaseEnv) => {
+  const current = getFirebaseRuntime(env)
+  if (!current) return null
+  try {
+    const result = await getRedirectResult(current.auth)
+    return result
+  } catch {
+    return null
   }
-
-  await signInWithPopup(current.auth, provider)
 }
 
 export const signInWithEmail = async (

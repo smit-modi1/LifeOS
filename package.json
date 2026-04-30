@@ -14,11 +14,13 @@
     "android:open": "npx cap open android"
   },
   "dependencies": {
+    "@capacitor-firebase/authentication": "^8.2.0",
     "@capacitor/android": "^8.3.1",
     "@capacitor/app": "^8.1.0",
     "@capacitor/core": "^8.3.1",
     "@capacitor/splash-screen": "^8.0.1",
     "@capacitor/status-bar": "^8.0.2",
+    "@firebase/app": "^0.14.11",
     "firebase": "^12.12.1",
     "pdf-parse": "^2.4.5",
     "react": "^19.2.5",

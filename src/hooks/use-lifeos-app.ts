@@ -4,6 +4,7 @@ import type { LifeOsData, ModuleKey, SyncStatus } from '../types/lifeos'
 import { createEmptyLifeOsData } from '../lib/lifeos'
 import {
   getFirebaseMessage,
+  getGoogleRedirectResult,
   isFirebaseConfigured,
   signInWithEmail,
   signInWithGoogle,
@@ -40,6 +41,9 @@ export const useLifeOsApp = () => {
     if (!firebaseRepository.isConfigured) {
       return
     }
+
+    // Capture Google redirect result on page load (after Google auth redirect)
+    void getGoogleRedirectResult(env).catch(() => undefined)
 
     return watchAuth(env, async (nextUser) => {
       setUser(nextUser)

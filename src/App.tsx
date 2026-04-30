@@ -233,7 +233,17 @@ function App() {
 
   if (mode === 'local-setup') return <SetupScreen onUseLocal={loadLocalMode} />
   if (mode === 'auth') return <AuthScreen onAuth={authenticate} onUseLocal={!firebaseConfigured ? loadLocalMode : undefined} error={error} firebaseConfigured={firebaseConfigured} />
-  if (mode === 'loading') return <div className="gate"><ShellCard><h1>Loading...</h1></ShellCard></div>
+  if (mode === 'loading') return (
+    <div className="gate">
+      <ShellCard>
+        <div style={{textAlign: 'center', padding: '24px 0'}}>
+          <div style={{fontSize: '36px', marginBottom: '16px', animation: 'spin 1.2s linear infinite', display: 'inline-block'}}>⟳</div>
+          <h2 style={{marginBottom: '8px'}}>Signing you in…</h2>
+          <p style={{color: 'var(--muted)', fontSize: '14px'}}>Connecting to your account</p>
+        </div>
+      </ShellCard>
+    </div>
+  )
 
   // Mobile Bottom Nav items (Max 5)
   const navItems = [
