@@ -1423,3 +1423,99 @@ export const WishesSection = ({
     </div>
   )
 }
+
+export const RoadmapSection = ({
+  data,
+  onChange,
+}: {
+  data: LifeOsData['roadmap']
+  onChange: (patch: Partial<LifeOsData['roadmap']>) => void
+}) => {
+  const [active, setActive] = useState<'Planned' | 'In Progress' | 'Done'>('Planned')
+  const shown = data.tasks.filter((t) => t.status === active)
+
+  return (
+    <div className="stack">
+      <SectionHeader title="What's Coming" subtitle="Track features and new developments for LifeOS." />
+      <Tabs
+        activeId={active}
+        onSelect={(id) => setActive(id as typeof active)}
+        tabs={[
+          { id: 'Planned', label: 'Planned' },
+          { id: 'In Progress', label: 'In Progress' },
+          { id: 'Done', label: 'Done' },
+        ]}
+      />
+      {active === 'Planned' && (
+        <AddRow
+          placeholder="New feature to build…"
+          onAdd={(value) =>
+            onChange({
+              tasks: [
+                ...data.tasks,
+                createRecord({
+                  title: value,
+                  status: 'Planned',
+                  priority: 'Medium',
+                  description: '',
+                }),
+              ],
+            })
+          }
+        />
+      )}
+      {shown.length === 0 && <EmptyState text={`No ${active.toLowerCase()} features right now.`} />}
+      {shown.map((task) => (
+        <ShellCard key={task.id} tone="soft">
+          <div className="record-card__header">
+            <strong>{task.title}</strong>
+            <div className="inline-actions">
+              {task.status !== 'Done' && (
+                <button
+                  className="button button--ghost"
+                  onClick={() =>
+                    onChange({
+                      tasks: setArrayItem(data.tasks, task.id, {
+                        status: task.status === 'Planned' ? 'In Progress' : 'Done',
+                      }),
+                    })
+                  }
+                  type="button"
+                >
+                  {task.status === 'Planned' ? 'Start' : 'Finish'}
+                </button>
+              )}
+              <button
+                className="button button--ghost"
+                onClick={() => onChange({ tasks: removeArrayItem(data.tasks, task.id) })}
+                type="button"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+          <div className="stack" style={{gap: '8px'}}>
+            <Select
+              value={task.priority}
+              onChange={(e) =>
+                onChange({ tasks: setArrayItem(data.tasks, task.id, { priority: e.target.value as 'Low'|'Medium'|'High' }) })
+              }
+            >
+              <option value="Low">Low Priority</option>
+              <option value="Medium">Medium Priority</option>
+              <option value="High">High Priority</option>
+            </Select>
+            <TextArea
+              placeholder="Technical notes or specs..."
+              value={task.description}
+              onChange={(e) =>
+                onChange({ tasks: setArrayItem(data.tasks, task.id, { description: e.target.value }) })
+              }
+            />
+          </div>
+        </ShellCard>
+      ))}
+    </div>
+  )
+}
+

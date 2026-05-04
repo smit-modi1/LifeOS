@@ -10,6 +10,7 @@ export type SectionId =
   | 'notes'
   | 'family'
   | 'wishes'
+  | 'roadmap'
 
 export type ModuleKey = Exclude<SectionId, 'dashboard'>
 export type HabitCadence = 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly'
@@ -158,6 +159,13 @@ export interface WishItem extends BaseRecord {
   priority?: 'Low' | 'Medium' | 'High'
 }
 
+export interface RoadmapTask extends BaseRecord {
+  title: string
+  status: 'Planned' | 'In Progress' | 'Done'
+  priority: 'Low' | 'Medium' | 'High'
+  description: string
+}
+
 export interface LifeOsData {
   profile: UserProfile
   work: { projects: WorkProject[] }
@@ -193,6 +201,9 @@ export interface LifeOsData {
   }
   wishes: {
     items: WishItem[]
+  }
+  roadmap: {
+    tasks: RoadmapTask[]
   }
 }
 

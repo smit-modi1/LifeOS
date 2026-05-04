@@ -15,6 +15,7 @@ import {
   NotesSection,
   ProfileSection,
   ReadingSection,
+  RoadmapSection,
   SkillsSection,
   WealthSection,
   WishesSection,
@@ -384,6 +385,7 @@ function App() {
       case 'notes': return <NotesSection data={data.notes} onChange={(value) => updateModule('notes', value)} />
       case 'family': return <FamilySection data={data.family} onChange={(value) => updateModule('family', value)} />
       case 'wishes': return <WishesSection data={data.wishes} onChange={(value) => updateModule('wishes', value)} />
+      case 'roadmap': return <RoadmapSection data={data.roadmap} onChange={(value) => updateModule('roadmap', value)} />
       case 'menu': return <MenuSection goTo={navigate} signOut={signOut} email={user?.email || undefined} />
       default: return null
     }

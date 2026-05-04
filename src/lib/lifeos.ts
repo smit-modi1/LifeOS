@@ -33,6 +33,7 @@ export const SECTION_META: Array<{
   { id: 'notes', label: 'Notes', icon: '◫' },
   { id: 'family', label: 'Responsibilities', icon: '◑' },
   { id: 'wishes', label: 'Wish List', icon: '✦' },
+  { id: 'roadmap', label: 'What\'s Coming', icon: '🚀' },
 ]
 
 export const STORAGE_KEY = 'lifeos-mobile-v1'
@@ -114,6 +115,7 @@ export const createEmptyLifeOsData = (): LifeOsData => ({
   notes: { items: [] },
   family: { members: [] },
   wishes: { items: [] },
+  roadmap: { tasks: [] },
 })
 
 export const mergeLifeOsData = (input: Partial<LifeOsData> | null | undefined): LifeOsData => {
@@ -137,6 +139,7 @@ export const mergeLifeOsData = (input: Partial<LifeOsData> | null | undefined): 
     notes: { ...fallback.notes, ...input.notes },
     family: { ...fallback.family, ...input.family },
     wishes: { ...fallback.wishes, ...input.wishes },
+    roadmap: { ...fallback.roadmap, ...input.roadmap },
   }
 }
 
