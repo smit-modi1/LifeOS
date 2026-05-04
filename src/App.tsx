@@ -4,6 +4,9 @@ import { ShellCard } from './components/ui'
 import { useLifeOsApp } from './hooks/use-lifeos-app'
 import { SECTION_META } from './lib/lifeos'
 import type { SectionId } from './types/lifeos'
+import type { AppContext, SpaceSummary } from './types/spaces'
+import { createEmailInvite } from './lib/invites'
+import { createDriveAttachment } from './lib/drive-links'
 import {
   DashboardSection,
   FamilySection,
@@ -29,6 +32,58 @@ const SyncBadge = ({
     {kind === 'firebase' ? 'Cloud' : 'Local'}
   </span>
 )
+
+const ContextSwitcher = ({
+  activeContext,
+  spaces,
+  onPersonal,
+  onSpace,
+  onCreateSpace,
+}: {
+  activeContext: AppContext
+  spaces: SpaceSummary[]
+  onPersonal: () => void
+  onSpace: (spaceId: string) => void
+  onCreateSpace: (name: string) => void
+}) => {
+  const createSpace = () => {
+    const name = window.prompt('Name this shared space')
+    const nextName = name?.trim()
+
+    if (nextName) {
+      onCreateSpace(nextName)
+    }
+  }
+
+  return (
+    <div className="context-switcher" aria-label="LifeOS context">
+      <button
+        className={activeContext.kind === 'personal' ? 'context-chip context-chip--active' : 'context-chip'}
+        onClick={onPersonal}
+        type="button"
+      >
+        Personal
+      </button>
+      {spaces.map((space) => (
+        <button
+          key={space.id}
+          className={
+            activeContext.kind === 'space' && activeContext.spaceId === space.id
+              ? 'context-chip context-chip--active'
+              : 'context-chip'
+          }
+          onClick={() => onSpace(space.id)}
+          type="button"
+        >
+          {space.name}
+        </button>
+      ))}
+      <button className="context-chip context-chip--create" onClick={createSpace} type="button">
+        + Space
+      </button>
+    </div>
+  )
+}
 
 const AuthScreen = ({
   onAuth,
@@ -117,18 +172,59 @@ const SetupScreen = ({
   </div>
 )
 
-// Mobile Menu Component
+
+
 const MenuSection = ({ 
   goTo, 
   signOut,
-  email
+  email,
 }: { 
   goTo: (id: SectionId) => void
   signOut: () => void
   email?: string
 }) => {
   const menuItems = SECTION_META.filter(s => !['dashboard', 'work', 'habits', 'wealth'].includes(s.id));
-  
+  const [inviteEmail, setInviteEmail] = useState('')
+  const [inviteStatus, setInviteStatus] = useState<string | null>(null)
+  const [driveUrl, setDriveUrl] = useState('')
+  const [driveStatus, setDriveStatus] = useState<string | null>(null)
+
+  const handleInvite = () => {
+    const trimmed = inviteEmail.trim()
+    if (!trimmed) return
+    try {
+      const invite = createEmailInvite({
+        spaceId: 'personal',
+        createdByUserId: email ?? 'local',
+        creatorRole: 'owner',
+        email: trimmed,
+        role: 'editor',
+      })
+      console.info('[LifeOS] Invite created:', invite.id)
+      setInviteStatus(`✓ Invite created for ${trimmed}`)
+      setInviteEmail('')
+    } catch (err) {
+      setInviteStatus(`Error: ${err instanceof Error ? err.message : 'Unknown error'}`)
+    }
+  }
+
+  const handleDriveAttach = () => {
+    const trimmed = driveUrl.trim()
+    if (!trimmed) return
+    try {
+      const attachment = createDriveAttachment({
+        url: trimmed,
+        label: 'Drive link',
+        owner: { type: 'shared' as const },
+      })
+      console.info('[LifeOS] Drive attachment created:', attachment.id)
+      setDriveStatus(`✓ Linked: ${attachment.label} (${attachment.kind})`)
+      setDriveUrl('')
+    } catch (err) {
+      setDriveStatus(`Error: ${err instanceof Error ? err.message : 'Invalid Drive URL'}`)
+    }
+  }
+
   return (
     <div className="stack">
       <div className="section-header">
@@ -153,7 +249,38 @@ const MenuSection = ({
         ))}
       </div>
 
-      <div style={{marginTop: '32px'}}>
+      {/* Drive Link Panel */}
+      <ShellCard>
+        <h3 style={{marginBottom: '12px', fontSize: '15px'}}>📎 Attach Drive Link</h3>
+        <form className="add-row" onSubmit={(e) => { e.preventDefault(); handleDriveAttach(); }}>
+          <input
+            className="field"
+            placeholder="Paste a Google Drive URL…"
+            value={driveUrl}
+            onChange={(e) => setDriveUrl(e.target.value)}
+          />
+          <button className="button button--primary" type="submit" onPointerDown={(e) => { e.preventDefault(); handleDriveAttach(); }}>Link</button>
+        </form>
+        {driveStatus && <p style={{fontSize: '12px', color: driveStatus.startsWith('✓') ? 'var(--c-green)' : 'var(--c-pink)', marginTop: '8px'}}>{driveStatus}</p>}
+      </ShellCard>
+
+      {/* Invite Panel */}
+      <ShellCard>
+        <h3 style={{marginBottom: '12px', fontSize: '15px'}}>✉️ Invite to Space</h3>
+        <form className="add-row" onSubmit={(e) => { e.preventDefault(); handleInvite(); }}>
+          <input
+            className="field"
+            placeholder="Email address…"
+            type="email"
+            value={inviteEmail}
+            onChange={(e) => setInviteEmail(e.target.value)}
+          />
+          <button className="button button--primary" type="submit" onPointerDown={(e) => { e.preventDefault(); handleInvite(); }}>Invite</button>
+        </form>
+        {inviteStatus && <p style={{fontSize: '12px', color: inviteStatus.startsWith('✓') ? 'var(--c-green)' : 'var(--c-pink)', marginTop: '8px'}}>{inviteStatus}</p>}
+      </ShellCard>
+
+      <div style={{marginTop: '8px'}}>
         <p style={{fontSize: '13px', color: 'var(--muted)', marginBottom: '12px', paddingLeft: '8px'}}>
           Account: {email || 'Local Mode'}
         </p>
@@ -173,9 +300,14 @@ function App() {
     error,
     syncStatus,
     repositoryKind,
+    activeContext,
+    userSpaces,
     firebaseConfigured,
     loadLocalMode,
     authenticate,
+    createSharedSpace,
+    selectPersonalContext,
+    selectSpaceContext,
     signOut,
     updateModule,
   } = useLifeOsApp()
@@ -274,6 +406,14 @@ function App() {
           <SyncBadge status={syncStatus} kind={repositoryKind} />
         </div>
       </header>
+
+      <ContextSwitcher
+        activeContext={activeContext}
+        spaces={userSpaces}
+        onPersonal={selectPersonalContext}
+        onSpace={selectSpaceContext}
+        onCreateSpace={createSharedSpace}
+      />
 
       {error && <p className="error-banner" style={{margin: '0 20px'}}>{error}</p>}
       

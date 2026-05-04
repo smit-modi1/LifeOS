@@ -71,3 +71,13 @@ export default defineConfig([
   },
 ])
 ```
+
+## Doctor
+
+Use `npm run doctor` to run the full LifeOS health check and safe auto-fix workflow.
+
+- `npm run doctor:web` runs `lint`, `test`, and `build`
+- `npm run doctor:android` validates Firebase and Capacitor Android wiring, rebuilds `dist`, and runs Android sync
+- `npm run doctor` runs both flows and prints a final summary with `PASS`, `FIXED`, `WARN`, or `FAIL`
+
+The doctor only applies conservative fixes. It will report blockers like a missing `android/app/google-services.json` instead of guessing or creating secrets for you.

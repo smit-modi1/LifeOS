@@ -10,6 +10,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "doctor": "node scripts/doctor.mjs full",
+    "doctor:web": "node scripts/doctor.mjs web",
+    "doctor:android": "node scripts/doctor.mjs android",
     "android:sync": "npx cap sync android",
     "android:open": "npx cap open android"
   },

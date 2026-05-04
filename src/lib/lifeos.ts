@@ -37,7 +37,14 @@ export const SECTION_META: Array<{
 
 export const STORAGE_KEY = 'lifeos-mobile-v1'
 
-export const todayKey = () => new Date().toISOString().slice(0, 10)
+export const todayKey = () => {
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
 
 export const nowIso = () => new Date().toISOString()
 

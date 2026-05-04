@@ -1,11 +1,24 @@
 import { useEffect, useState } from 'react'
 import type { User } from 'firebase/auth'
 import type { LifeOsData, ModuleKey, SyncStatus } from '../types/lifeos'
+import type { AppContext, SpaceSummary } from '../types/spaces'
+import { getAuthValidationMessage } from '../lib/auth'
 import { createEmptyLifeOsData } from '../lib/lifeos'
+import { PrivateVaultRepository, deriveVaultPassphrase } from '../lib/private-vault-repository'
+import { SharedSpaceRepository } from '../lib/shared-space-repository'
+import { migrateLegacyLifeOsData } from '../lib/migration'
+import {
+  createPersonalContext,
+  createSpaceContext,
+  createSpaceSummary,
+  loadSpaceSummaries,
+  saveSpaceSummaries,
+} from '../lib/spaces'
 import {
   getFirebaseMessage,
   getGoogleRedirectResult,
   isFirebaseConfigured,
+  saveFirebasePath,
   signInWithEmail,
   signInWithGoogle,
   signOutUser,
@@ -23,8 +36,18 @@ type Credentials = {
 }
 
 const env = import.meta.env as Record<string, string | undefined>
+const vaultSecret = env['VITE_VAULT_SECRET'] ?? 'lifeos-default-vault'
 const firebaseRepository = new FirebaseLifeOsRepository(env)
 const localRepository = new LocalLifeOsRepository()
+const spaceStorage = () => (typeof window === 'undefined' ? null : window.localStorage)
+const privateModuleKeys: ModuleKey[] = ['profile', 'wealth', 'notes', 'wishes']
+const localPathWriter = async (path: string, value: unknown) => {
+  spaceStorage()?.setItem(`lifeos-path:${path}`, JSON.stringify(value))
+}
+const firebasePathWriter = async (path: string, value: unknown) => {
+  await saveFirebasePath(env, path, value)
+}
+const MIGRATION_KEY = 'lifeos-migrated-v1'
 
 export const useLifeOsApp = () => {
   const [mode, setMode] = useState<AppMode>(
@@ -37,6 +60,15 @@ export const useLifeOsApp = () => {
   )
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle')
   const [error, setError] = useState<string | null>(null)
+  const [activeContext, setActiveContext] = useState<AppContext>(createPersonalContext('local'))
+  const [userSpaces, setUserSpaces] = useState<SpaceSummary[]>(() =>
+    loadSpaceSummaries(spaceStorage(), 'local'),
+  )
+
+  const setAccountSpaces = (userId: string) => {
+    setUserSpaces(loadSpaceSummaries(spaceStorage(), userId))
+    setActiveContext(createPersonalContext(userId))
+  }
 
   useEffect(() => {
     if (!firebaseRepository.isConfigured) {
@@ -63,10 +95,18 @@ export const useLifeOsApp = () => {
           return
         }
 
+        setAccountSpaces(nextUser.uid)
         setRepositoryKind('firebase')
         setMode('loading')
         try {
           const nextData = await firebaseRepository.load(nextUser.uid)
+          // Run migration once per account to split data into private vault
+          const migrationKey = `${MIGRATION_KEY}:${nextUser.uid}`
+          if (!localStorage.getItem(migrationKey)) {
+            const result = migrateLegacyLifeOsData(nextData, nextUser.uid)
+            console.info('[LifeOS] Data migration applied for user:', result.userId)
+            localStorage.setItem(migrationKey, '1')
+          }
           setData(nextData)
           setMode('ready')
         } catch (e) {
@@ -84,6 +124,7 @@ export const useLifeOsApp = () => {
 
   const loadLocalMode = async () => {
     setRepositoryKind('local')
+    setAccountSpaces('local')
     setMode('loading')
     const nextData = await localRepository.load('local')
     setData(nextData)
@@ -92,16 +133,28 @@ export const useLifeOsApp = () => {
   }
 
   const updateModule = async <K extends ModuleKey>(key: K, nextValue: LifeOsData[K]) => {
-    const activeRepository =
-      repositoryKind === 'firebase' && user ? firebaseRepository : localRepository
     const userId = repositoryKind === 'firebase' && user ? user.uid : 'local'
+    const pathWriter = repositoryKind === 'firebase' && user ? firebasePathWriter : localPathWriter
 
     setData((current) => ({ ...current, [key]: nextValue }))
     setSyncStatus('saving')
     setError(null)
 
     try {
-      await activeRepository.saveModule(userId, key, nextValue)
+      if (activeContext.kind === 'space') {
+        const sharedRepository = new SharedSpaceRepository(pathWriter)
+        await sharedRepository.saveModule(activeContext.spaceId, key, nextValue)
+      } else if (privateModuleKeys.includes(key)) {
+        const userEmail = user?.email ?? 'local'
+        const passphrase = deriveVaultPassphrase(userId, userEmail, vaultSecret)
+        const privateRepository = new PrivateVaultRepository(pathWriter, passphrase)
+        await privateRepository.saveModule(userId, key, nextValue)
+      } else {
+        const activeRepository =
+          repositoryKind === 'firebase' && user ? firebaseRepository : localRepository
+        await activeRepository.saveModule(userId, key, nextValue)
+      }
+
       setSyncStatus('saved')
       window.setTimeout(() => {
         setSyncStatus((current) => (current === 'saved' ? 'idle' : current))
@@ -116,6 +169,13 @@ export const useLifeOsApp = () => {
     intent: 'signin' | 'signup' | 'google',
     credentials?: Credentials,
   ) => {
+    const validationMessage = getAuthValidationMessage(intent, credentials)
+    if (validationMessage) {
+      setError(validationMessage)
+      setMode('auth')
+      return
+    }
+
     try {
       setError(null)
       setMode('loading')
@@ -136,7 +196,26 @@ export const useLifeOsApp = () => {
   const signOut = async () => {
     await signOutUser(env)
     setUser(null)
+    setAccountSpaces('local')
     setMode(firebaseRepository.isConfigured ? 'auth' : 'local-setup')
+  }
+
+  const createSharedSpace = (name: string) => {
+    const userId = user?.uid ?? 'local'
+    const space = createSpaceSummary({ name, ownerId: userId })
+    const nextSpaces = [...userSpaces, space]
+
+    setUserSpaces(nextSpaces)
+    saveSpaceSummaries(spaceStorage(), userId, nextSpaces)
+    setActiveContext(createSpaceContext(userId, space.id))
+  }
+
+  const selectPersonalContext = () => {
+    setActiveContext(createPersonalContext(user?.uid ?? 'local'))
+  }
+
+  const selectSpaceContext = (spaceId: string) => {
+    setActiveContext(createSpaceContext(user?.uid ?? 'local', spaceId))
   }
 
   return {
@@ -146,9 +225,14 @@ export const useLifeOsApp = () => {
     error,
     syncStatus,
     repositoryKind,
+    activeContext,
+    userSpaces,
     firebaseConfigured: isFirebaseConfigured(env),
     loadLocalMode,
     authenticate,
+    createSharedSpace,
+    selectPersonalContext,
+    selectSpaceContext,
     signOut,
     updateModule,
   }

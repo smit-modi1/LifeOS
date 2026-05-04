@@ -73,7 +73,7 @@ export const AddRow = ({
         onChange={(event) => setValue(event.target.value)}
         placeholder={placeholder}
       />
-      <button className="button button--primary" type="submit" onPointerDown={(e) => { e.preventDefault(); submit(); }}>
+      <button className="button button--primary" type="submit">
         Add
       </button>
     </form>

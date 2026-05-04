@@ -168,6 +168,38 @@ button:hover { opacity: 0.85; }
   gap: 8px;
 }
 
+.context-switcher {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px 20px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  scrollbar-width: none;
+}
+.context-switcher::-webkit-scrollbar { display: none; }
+
+.context-chip {
+  flex: 0 0 auto;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text2);
+  border: 1px solid var(--border2);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.context-chip--active {
+  background: var(--c-blue-dim);
+  color: var(--c-blue-text);
+  border-color: var(--c-blue);
+}
+
+.context-chip--create {
+  color: var(--c-green-text);
+}
+
 /* ─── MAIN CONTENT ─── */
 .main-panel {
   flex: 1;
@@ -479,3 +511,53 @@ button:hover { opacity: 0.85; }
 .gate__eyebrow { color: var(--c-violet); font-weight: 700; font-size: 10.5px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1.8px;}
 .gate__copy { color: var(--muted); font-size: 13px; margin-bottom: 24px; line-height: 1.6; }
 .env-list { background: var(--card); color: var(--text2); padding: 16px; border-radius: 10px; font-size: 12px; overflow-x: auto; border: 1px solid var(--border2); }
+
+/* ─── CONTEXT SWITCHER ─── */
+.context-switcher {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 10px 20px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  scrollbar-width: none;
+  transition: background 0.3s ease;
+}
+.context-switcher::-webkit-scrollbar { display: none; }
+
+.context-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.context-btn--active {
+  background: var(--c-violet);
+  color: #fff;
+  border-color: var(--c-violet);
+}
+.context-create {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.context-create .field {
+  width: 120px;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+/* ─── INLINE ACTIONS ─── */
+.inline-actions { display: flex; gap: 6px; }
+.record-card { background: var(--surface); border-radius: 12px; border: 1px solid var(--line); padding: 14px; }
+.record-card__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+

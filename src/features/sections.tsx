@@ -156,7 +156,7 @@ export const ProfileSection = ({
       <ShellCard>
         <div className="section-row">
           <h3>Experience</h3>
-          <button className="button button--primary" onClick={addExperience} onPointerDown={(e) => { e.preventDefault(); addExperience(); }} type="button">
+          <button className="button button--primary" onClick={addExperience} type="button">
             Add role
           </button>
         </div>
@@ -211,7 +211,7 @@ export const ProfileSection = ({
       <ShellCard>
         <div className="section-row">
           <h3>Education</h3>
-          <button className="button button--primary" onClick={addEducation} onPointerDown={(e) => { e.preventDefault(); addEducation(); }} type="button">
+          <button className="button button--primary" onClick={addEducation} type="button">
             Add study
           </button>
         </div>

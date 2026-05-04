@@ -30,7 +30,8 @@ export class LocalLifeOsRepository implements LifeOsRepository {
     this.storage = storage
   }
 
-  async load(_userId = 'local'): Promise<LifeOsData> {
+  async load(userId = 'local'): Promise<LifeOsData> {
+    void userId
     const raw = this.storage?.getItem(this.storageKey)
 
     if (!raw) {
@@ -44,7 +45,8 @@ export class LocalLifeOsRepository implements LifeOsRepository {
     }
   }
 
-  async saveModule<K extends ModuleKey>(_userId: string, key: K, data: LifeOsData[K]) {
+  async saveModule<K extends ModuleKey>(userId: string, key: K, data: LifeOsData[K]) {
+    void userId
     const current = await this.load()
     const next = { ...current, [key]: data }
     this.storage?.setItem(this.storageKey, JSON.stringify(next))

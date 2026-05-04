@@ -26,6 +26,7 @@ import { signInWithCredential } from 'firebase/auth'
 import { Capacitor } from '@capacitor/core'
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication'
 import type { LifeOsData, ModuleKey } from '../types/lifeos'
+import { shouldRetryGoogleWithLegacyFlow } from './auth'
 import { createEmptyLifeOsData, mergeLifeOsData, nowIso } from './lifeos'
 
 type FirebaseEnv = Record<string, string | undefined>
@@ -108,7 +109,19 @@ export const signInWithGoogle = async (env: FirebaseEnv) => {
   }
 
   if (Capacitor.isNativePlatform()) {
-    const result = await FirebaseAuthentication.signInWithGoogle()
+    let result
+    try {
+      result = await FirebaseAuthentication.signInWithGoogle()
+    } catch (error) {
+      if (!shouldRetryGoogleWithLegacyFlow(error)) {
+        throw error
+      }
+
+      result = await FirebaseAuthentication.signInWithGoogle({
+        useCredentialManager: false,
+      })
+    }
+
     if (result.credential?.idToken) {
       const credential = GoogleAuthProvider.credential(result.credential.idToken)
       await signInWithCredential(current.auth, credential)
@@ -271,6 +284,29 @@ export const saveFirebaseModule = async <K extends ModuleKey>(
       { merge: true },
     ),
   ])
+}
+
+export const saveFirebasePath = async (
+  env: FirebaseEnv,
+  path: string,
+  data: unknown,
+) => {
+  const current = getFirebaseRuntime(env)
+
+  if (!current) {
+    return
+  }
+
+  const segments = path.split('/').filter(Boolean)
+  if (segments.length % 2 !== 0) {
+    throw new Error(`Invalid Firestore document path: ${path}`)
+  }
+
+  await setDoc(
+    doc(current.db, segments[0], ...segments.slice(1)),
+    { data, updatedAt: nowIso() },
+    { merge: true },
+  )
 }
 
 export const getFirebaseMessage = (error: unknown) => {
