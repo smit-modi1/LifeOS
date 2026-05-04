@@ -228,6 +228,12 @@ export const calculateDashboardStats = (data: LifeOsData): DashboardStat[] => {
       value: `${completedWishes}/${data.wishes.items.length}`,
       sublabel: 'fulfilled wishes',
     },
+    {
+      id: 'roadmap',
+      label: 'Feature Pipeline',
+      value: data.roadmap.tasks.filter((t) => t.status === 'In Progress').length,
+      sublabel: `${data.roadmap.tasks.length} features tracked`,
+    },
   ]
 }
 
