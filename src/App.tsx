@@ -388,6 +388,11 @@ function App() {
 
   return (
     <div className="app-shell">
+      <div className="ambient-background">
+        <div className="ambient-orb orb-1" />
+        <div className="ambient-orb orb-2" />
+        <div className="ambient-orb orb-3" />
+      </div>
       <header className="topbar">
         <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
           <img src="/src/assets/banana_logo.png" alt="Logo" style={{width: '32px', height: '32px', borderRadius: '8px'}} />

@@ -561,3 +561,66 @@ button:hover { opacity: 0.85; }
 .record-card { background: var(--surface); border-radius: 12px; border: 1px solid var(--line); padding: 14px; }
 .record-card__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 
+/* ─── AMBIENT GOOGLE ANIMATION ─── */
+.ambient-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none;
+  background: transparent;
+}
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.6;
+  mix-blend-mode: screen;
+  animation: floatOrb 20s infinite ease-in-out alternate;
+}
+
+[data-theme="dark"] .ambient-orb {
+  mix-blend-mode: lighten;
+  opacity: 0.4;
+}
+
+.orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--c-violet) 0%, transparent 70%);
+  top: -100px;
+  left: -100px;
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, var(--c-blue) 0%, transparent 70%);
+  bottom: -150px;
+  right: -100px;
+  animation-delay: -5s;
+  animation-duration: 25s;
+}
+
+.orb-3 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--c-orange) 0%, transparent 70%);
+  top: 40%;
+  left: 60%;
+  animation-delay: -10s;
+  animation-duration: 18s;
+}
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
