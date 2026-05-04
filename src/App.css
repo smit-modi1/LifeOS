@@ -557,7 +557,7 @@ button:hover { opacity: 0.85; }
 .record-card { background: var(--surface); border-radius: 12px; border: 1px solid var(--line); padding: 14px; }
 .record-card__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 
-/* ─── AMBIENT GOOGLE ANIMATION ─── */
+/* ─── AMBIENT GOOGLE ANIMATION (AURORA UI) ─── */
 .ambient-background {
   position: fixed;
   top: 0;
@@ -570,51 +570,72 @@ button:hover { opacity: 0.85; }
   background: var(--bg);
 }
 
+.ambient-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(100px);
+  -webkit-backdrop-filter: blur(100px);
+}
+[data-theme="dark"] .ambient-background::after {
+  background: rgba(14, 14, 20, 0.5);
+}
+
 .ambient-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.4;
+  filter: blur(40px);
+  opacity: 0.8;
   animation: floatOrb 20s infinite ease-in-out alternate;
 }
-
 [data-theme="dark"] .ambient-orb {
-  opacity: 0.2;
+  opacity: 0.6;
 }
 
 .orb-1 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, var(--c-violet) 0%, transparent 70%);
-  top: -100px;
-  left: -100px;
+  width: 60vw; height: 60vw;
+  background: var(--c-violet);
+  top: -10%; left: -10%;
   animation-delay: 0s;
 }
 
 .orb-2 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, var(--c-blue) 0%, transparent 70%);
-  bottom: -150px;
-  right: -100px;
+  width: 50vw; height: 50vw;
+  background: var(--c-blue);
+  bottom: -20%; right: -10%;
   animation-delay: -5s;
   animation-duration: 25s;
 }
 
 .orb-3 {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, var(--c-orange) 0%, transparent 70%);
-  top: 40%;
-  left: 60%;
+  width: 45vw; height: 45vw;
+  background: var(--c-pink);
+  top: 40%; left: 60%;
   animation-delay: -10s;
   animation-duration: 18s;
 }
 
+.orb-4 {
+  width: 55vw; height: 55vw;
+  background: var(--c-green);
+  bottom: 20%; left: -20%;
+  animation-delay: -15s;
+  animation-duration: 22s;
+}
+
+.orb-5 {
+  width: 40vw; height: 40vw;
+  background: var(--c-orange);
+  top: 10%; right: 20%;
+  animation-delay: -2s;
+  animation-duration: 19s;
+}
+
 @keyframes floatOrb {
-  0% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-  100% { transform: translate(0, 0) scale(1); }
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(10vw, -10vh) scale(1.2) rotate(45deg); }
+  66% { transform: translate(-10vw, 10vh) scale(0.8) rotate(-45deg); }
+  100% { transform: translate(0, 0) scale(1) rotate(0deg); }
 }
 
