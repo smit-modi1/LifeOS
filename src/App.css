@@ -574,14 +574,12 @@ button:hover { opacity: 0.85; }
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
-  opacity: 0.6;
-  mix-blend-mode: screen;
+  opacity: 0.4;
   animation: floatOrb 20s infinite ease-in-out alternate;
 }
 
 [data-theme="dark"] .ambient-orb {
-  mix-blend-mode: lighten;
-  opacity: 0.4;
+  opacity: 0.2;
 }
 
 .orb-1 {
