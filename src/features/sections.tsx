@@ -1429,7 +1429,7 @@ export const RoadmapSection = ({
   onChange,
 }: {
   data: LifeOsData['roadmap']
-  onChange: (patch: Partial<LifeOsData['roadmap']>) => void
+  onChange: (value: LifeOsData['roadmap']) => void
 }) => {
   const [active, setActive] = useState<'Planned' | 'In Progress' | 'Done'>('Planned')
   const shown = data.tasks.filter((t) => t.status === active)
@@ -1438,8 +1438,8 @@ export const RoadmapSection = ({
     <div className="stack">
       <SectionHeader title="What's Coming" subtitle="Track features and new developments for LifeOS." />
       <Tabs
-        activeId={active}
-        onSelect={(id) => setActive(id as typeof active)}
+        active={active}
+        onChange={(id: string) => setActive(id as typeof active)}
         tabs={[
           { id: 'Planned', label: 'Planned' },
           { id: 'In Progress', label: 'In Progress' },
