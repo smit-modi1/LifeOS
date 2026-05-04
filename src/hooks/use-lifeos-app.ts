@@ -13,6 +13,7 @@ import {
   watchAuth,
 } from '../lib/firebase'
 import { FirebaseLifeOsRepository, LocalLifeOsRepository } from '../lib/repositories'
+import { Capacitor } from '@capacitor/core'
 
 type AppMode = 'loading' | 'auth' | 'local-setup' | 'ready'
 
@@ -49,7 +50,9 @@ export const useLifeOsApp = () => {
       // Firebase fires onAuthStateChanged(null) immediately on page load, before
       // processing the redirect credential. If we don't wait, the user gets
       // bounced back to the login screen right away.
-      await getGoogleRedirectResult(env).catch(() => undefined)
+      if (!Capacitor.isNativePlatform()) {
+        await getGoogleRedirectResult(env).catch(() => undefined)
+      }
 
       unsubscribe = watchAuth(env, async (nextUser) => {
         setUser(nextUser)

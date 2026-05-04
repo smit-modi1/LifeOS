@@ -257,9 +257,12 @@ function App() {
   return (
     <div className="app-shell">
       <header className="topbar">
-        <div>
-          <p className="topbar__eyebrow">LifeOS</p>
-          <h1 style={{fontSize: '20px'}}>Command Centre</h1>
+        <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+          <img src="/src/assets/banana_logo.png" alt="Logo" style={{width: '32px', height: '32px', borderRadius: '8px'}} />
+          <div>
+            <p className="topbar__eyebrow">LifeOS</p>
+            <h1 style={{fontSize: '20px'}}>Command Centre</h1>
+          </div>
         </div>
         <div className="topbar__actions" style={{flexDirection: 'row', alignItems: 'center'}}>
           <button 

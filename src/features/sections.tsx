@@ -41,7 +41,7 @@ export const DashboardSection = ({
     <div className="stack">
       <SectionHeader
         title="Your command centre"
-        subtitle="A mobile-first LifeOS for work, growth, money, learning, and everything you want to keep moving."
+        subtitle="Peel back your potential with LifeOS."
       />
       <StatGrid>
         {stats.map((stat) => (
@@ -156,7 +156,7 @@ export const ProfileSection = ({
       <ShellCard>
         <div className="section-row">
           <h3>Experience</h3>
-          <button className="button button--primary" onClick={addExperience} type="button">
+          <button className="button button--primary" onClick={addExperience} onPointerDown={(e) => { e.preventDefault(); addExperience(); }} type="button">
             Add role
           </button>
         </div>
@@ -211,7 +211,7 @@ export const ProfileSection = ({
       <ShellCard>
         <div className="section-row">
           <h3>Education</h3>
-          <button className="button button--primary" onClick={addEducation} type="button">
+          <button className="button button--primary" onClick={addEducation} onPointerDown={(e) => { e.preventDefault(); addEducation(); }} type="button">
             Add study
           </button>
         </div>

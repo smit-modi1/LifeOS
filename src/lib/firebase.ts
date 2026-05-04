@@ -22,6 +22,9 @@ import {
   setDoc,
 } from 'firebase/firestore'
 import { FirebaseError, getApp, getApps, initializeApp, type FirebaseApp } from 'firebase/app'
+import { signInWithCredential } from 'firebase/auth'
+import { Capacitor } from '@capacitor/core'
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication'
 import type { LifeOsData, ModuleKey } from '../types/lifeos'
 import { createEmptyLifeOsData, mergeLifeOsData, nowIso } from './lifeos'
 
@@ -104,9 +107,19 @@ export const signInWithGoogle = async (env: FirebaseEnv) => {
     throw new Error('Firebase is not configured.')
   }
 
-  const provider = new GoogleAuthProvider()
-  // Use redirect for both web and native — popups are blocked by most browsers
-  await signInWithRedirect(current.auth, provider)
+  if (Capacitor.isNativePlatform()) {
+    const result = await FirebaseAuthentication.signInWithGoogle()
+    if (result.credential?.idToken) {
+      const credential = GoogleAuthProvider.credential(result.credential.idToken)
+      await signInWithCredential(current.auth, credential)
+    } else {
+      throw new Error('Google Sign-In failed: No ID token returned.')
+    }
+  } else {
+    const provider = new GoogleAuthProvider()
+    // Use redirect for both web and native — popups are blocked by most browsers
+    await signInWithRedirect(current.auth, provider)
+  }
 }
 
 export const getGoogleRedirectResult = async (env: FirebaseEnv) => {

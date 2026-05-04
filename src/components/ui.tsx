@@ -67,17 +67,16 @@ export const AddRow = ({
   }
 
   return (
-    <div className="add-row">
+    <form className="add-row" onSubmit={(e) => { e.preventDefault(); submit(); }}>
       <input
         value={value}
         onChange={(event) => setValue(event.target.value)}
-        onKeyDown={(event) => event.key === 'Enter' && submit()}
         placeholder={placeholder}
       />
-      <button className="button button--primary" onClick={submit} type="button">
+      <button className="button button--primary" type="submit" onPointerDown={(e) => { e.preventDefault(); submit(); }}>
         Add
       </button>
-    </div>
+    </form>
   )
 }
 
