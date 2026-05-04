@@ -100,14 +100,24 @@ const AuthScreen = ({
   const [password, setPassword] = useState('')
   const [mode, setMode] = useState<'signin' | 'signup'>('signin')
 
+  const quotes = [
+    { text: "The mind is everything. What you think you become.", author: "Buddha" },
+    { text: "You have power over your mind - not outside events. Realize this, and you will find strength.", author: "Marcus Aurelius" },
+    { text: "Do not dwell in the past, do not dream of the future, concentrate the mind on the present moment.", author: "Buddha" },
+    { text: "Simplicity is the ultimate sophistication.", author: "Leonardo da Vinci" },
+    { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+  ]
+  const [quote] = useState(() => quotes[Math.floor(Math.random() * quotes.length)])
+
   return (
     <div className="gate">
       <ShellCard>
         <p className="gate__eyebrow">LifeOS mobile</p>
         <h1>Welcome Back</h1>
-        <p className="gate__copy">
-          Sign in to access your personal operating system.
-        </p>
+        <div style={{ margin: '16px 0 24px 0', padding: '16px', background: 'var(--surface)', borderRadius: '12px', borderLeft: '4px solid var(--c-violet)', boxShadow: 'var(--shadow-sm)' }}>
+          <p style={{ fontStyle: 'italic', color: 'var(--text2)', fontSize: '14px', marginBottom: '8px', lineHeight: '1.5' }}>"{quote.text}"</p>
+          <p style={{ fontSize: '12px', color: 'var(--muted)', fontWeight: 600 }}>— {quote.author}</p>
+        </div>
         <div className="stack">
           <button className="button button--primary button--wide" onClick={() => onAuth('google')} type="button" style={{background: 'var(--card)', color: 'var(--ink)', border: '1px solid var(--border2)'}}>
             Continue with Google
@@ -395,7 +405,7 @@ function App() {
       </div>
       <header className="topbar">
         <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-          <img src="/src/assets/banana_logo.png" alt="Logo" style={{width: '32px', height: '32px', borderRadius: '8px'}} />
+          <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'var(--c-violet)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '18px', boxShadow: 'var(--shadow-sm)' }}>✨</div>
           <div>
             <p className="topbar__eyebrow">LifeOS</p>
             <h1 style={{fontSize: '20px'}}>Command Centre</h1>

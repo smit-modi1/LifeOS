@@ -19,9 +19,9 @@
   --text4: #94A3B8;
   
   /* Shared Base Colors */
-  --c-violet: #FBBC05;
-  --c-violet-dim: rgba(251, 188, 5, 0.15);
-  --c-violet-text: #F29900;
+  --c-violet: #6366f1; /* Modern Indigo */
+  --c-violet-dim: rgba(99, 102, 241, 0.15);
+  --c-violet-text: #4f46e5;
   
   --c-blue: #3B82F6;
   --c-blue-dim: rgba(59, 130, 246, 0.15);
@@ -58,9 +58,9 @@
   --muted: rgba(255, 255, 255, 0.45);
   --text4: rgba(255, 255, 255, 0.25);
   
-  --c-violet: #FDD663;
-  --c-violet-dim: rgba(253, 214, 99, 0.2);
-  --c-violet-text: #FDE293;
+  --c-violet: #818cf8;
+  --c-violet-dim: rgba(129, 140, 248, 0.2);
+  --c-violet-text: #a5b4fc;
   
   --c-blue: #5B8BFF;
   --c-blue-dim: rgba(91, 139, 255, 0.2);
@@ -96,10 +96,6 @@ body {
   overflow: hidden;
   font-family: 'Outfit', sans-serif;
   background-color: var(--bg);
-  background-image: url('./assets/banana_bg.png');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   transition: background 0.3s ease, color 0.3s ease;
