@@ -85,6 +85,14 @@ const ContextSwitcher = ({
   )
 }
 
+const AmbientBackground = () => (
+  <div className="ambient-background">
+    <div className="ambient-orb orb-1" />
+    <div className="ambient-orb orb-2" />
+    <div className="ambient-orb orb-3" />
+  </div>
+)
+
 const AuthScreen = ({
   onAuth,
   onUseLocal,
@@ -110,7 +118,9 @@ const AuthScreen = ({
   const [quote] = useState(() => quotes[Math.floor(Math.random() * quotes.length)])
 
   return (
-    <div className="gate">
+    <div className="app-shell">
+      <AmbientBackground />
+      <div className="gate">
       <ShellCard>
         <p className="gate__eyebrow">LifeOS mobile</p>
         <h1>Welcome Back</h1>
@@ -160,6 +170,7 @@ const AuthScreen = ({
         </div>
       </ShellCard>
     </div>
+    </div>
   )
 }
 
@@ -168,7 +179,9 @@ const SetupScreen = ({
 }: {
   onUseLocal: () => Promise<void>
 }) => (
-  <div className="gate">
+  <div className="app-shell">
+    <AmbientBackground />
+    <div className="gate">
     <ShellCard>
       <p className="gate__eyebrow">Setup</p>
       <h1>Configure Keys</h1>
@@ -179,6 +192,7 @@ const SetupScreen = ({
         Continue in local mode
       </button>
     </ShellCard>
+  </div>
   </div>
 )
 
@@ -376,7 +390,9 @@ function App() {
   if (mode === 'local-setup') return <SetupScreen onUseLocal={loadLocalMode} />
   if (mode === 'auth') return <AuthScreen onAuth={authenticate} onUseLocal={!firebaseConfigured ? loadLocalMode : undefined} error={error} firebaseConfigured={firebaseConfigured} />
   if (mode === 'loading') return (
-    <div className="gate">
+    <div className="app-shell">
+      <AmbientBackground />
+      <div className="gate">
       <ShellCard>
         <div style={{textAlign: 'center', padding: '24px 0'}}>
           <div style={{fontSize: '36px', marginBottom: '16px', animation: 'spin 1.2s linear infinite', display: 'inline-block'}}>⟳</div>
@@ -384,6 +400,7 @@ function App() {
           <p style={{color: 'var(--muted)', fontSize: '14px'}}>Connecting to your account</p>
         </div>
       </ShellCard>
+    </div>
     </div>
   )
 
@@ -398,11 +415,7 @@ function App() {
 
   return (
     <div className="app-shell">
-      <div className="ambient-background">
-        <div className="ambient-orb orb-1" />
-        <div className="ambient-orb orb-2" />
-        <div className="ambient-orb orb-3" />
-      </div>
+      <AmbientBackground />
       <header className="topbar">
         <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
           <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'var(--c-violet)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '18px', boxShadow: 'var(--shadow-sm)' }}>✨</div>
