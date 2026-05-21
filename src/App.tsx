@@ -21,6 +21,7 @@ import {
   WishesSection,
   WorkSection,
 } from './features/sections'
+import { AssistantSection } from './features/AssistantSection'
 
 const SyncBadge = ({
   status,
@@ -467,6 +468,7 @@ function App() {
           </button>
         ))}
       </nav>
+      <AssistantSection data={data} updateModule={updateModule} />
     </div>
   )
 }
